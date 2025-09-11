@@ -1,8 +1,8 @@
-package simen.order.pokemongame.controller;
+package simen.order.card.controller;
 
 import org.springframework.web.bind.annotation.*;
-import simen.order.pokemongame.model.Card;
-import simen.order.pokemongame.services.CardService;
+import simen.order.card.model.Card;
+import simen.order.card.services.CardService;
 
 @RestController
 @RequestMapping("/pokemon")

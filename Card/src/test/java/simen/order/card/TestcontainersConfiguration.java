@@ -1,4 +1,4 @@
-package simen.order.pokemongame;
+package simen.order.card;
 
 import org.springframework.boot.test.context.TestConfiguration;
 

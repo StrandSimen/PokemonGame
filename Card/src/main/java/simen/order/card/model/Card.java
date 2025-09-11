@@ -1,4 +1,4 @@
-package simen.order.pokemongame.model;
+package simen.order.card.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

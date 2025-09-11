@@ -1,8 +1,8 @@
-package simen.order.pokemongame.services;
+package simen.order.card.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import simen.order.pokemongame.model.ApiResponse;
-import simen.order.pokemongame.model.Card;
+import simen.order.card.model.ApiResponse;
+import simen.order.card.model.Card;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -19,7 +19,9 @@ import java.util.Map;
 public class CardService {
 
     private static final String API_URL = "https://api.pokemontcg.io/v2/cards";
-    private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newBuilder()
+            .connectTimeout(java.time.Duration.ofSeconds(30)) // Changed timeout to 30 seconds
+            .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Map<Integer, Card> cache = new HashMap<>();
