@@ -27,7 +27,7 @@ public class CardService {
     private final Map<Integer, Card> cache = new HashMap<>();
 
     @PostConstruct
-    public void preloadCards() throws IOException, InterruptedException {
+    public void loadDatabase() throws IOException, InterruptedException {
         int page = 1;
         boolean morePages = true;
 

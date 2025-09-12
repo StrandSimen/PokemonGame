@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>simen.order</groupId>
-    <artifactId>Card</artifactId>
+    <artifactId>LoadDB</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Card</name>
     <description>Card</description>
