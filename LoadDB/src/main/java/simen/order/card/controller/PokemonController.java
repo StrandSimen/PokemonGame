@@ -1,30 +1,29 @@
 package simen.order.card.controller;
 
-import org.springframework.web.bind.annotation.*;
-import simen.order.card.model.Card;
 import simen.order.card.services.CardService;
+import simen.order.card.model.Card;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/pokemon")
 public class PokemonController {
 
-    private final CardService cardService;
+    @Autowired
+    private CardService cardService;
 
-    public PokemonController(CardService cardService) {
-        this.cardService = cardService;
+    @GetMapping("/all")
+    public List<Card> getAllPokemon() {
+        return cardService.getAllCachedCards();
     }
 
     @GetMapping("/{pokedexNumber}")
     public Card getPokemon(@PathVariable int pokedexNumber) {
-        Card card = cardService.getPokemon(pokedexNumber);
-        if (card == null) {
-            throw new RuntimeException("Pokemon not found");
-        }
-        return card;
-    }
-
-    @GetMapping("/all")
-    public Object getAllPokemon() {
-        return cardService.getAllCachedCards();
+        return cardService.getPokemon(pokedexNumber);
     }
 }
