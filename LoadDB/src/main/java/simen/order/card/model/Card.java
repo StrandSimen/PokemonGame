@@ -3,6 +3,8 @@ package simen.order.card.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Map;
 
 @Entity  // Mark as JPA entity
@@ -18,11 +20,12 @@ public class Card {
     private String types;  // Store as comma-separated string (e.g., "Grass,Poison")
     private String imageUrl;
 
+    @Transient
+    private List<Integer> nationalPokedexNumbers;
+
     @JsonProperty("nationalPokedexNumbers")
-    private void setNationalPokedexNumbers(java.util.List<Integer> nationalPokedexNumbers) {
-        if (nationalPokedexNumbers != null && !nationalPokedexNumbers.isEmpty()) {
-            this.pokedexNumber = nationalPokedexNumbers.get(0);  // Take first as ID
-        }
+    private void setNationalPokedexNumbers(List<Integer> nationalPokedexNumbers) {
+        this.nationalPokedexNumbers = nationalPokedexNumbers;
     }
 
     @JsonProperty("types")
@@ -42,6 +45,10 @@ public class Card {
     // Getters and Setters
     public Integer getPokedexNumber() { return pokedexNumber; }
     public void setPokedexNumber(Integer pokedexNumber) { this.pokedexNumber = pokedexNumber; }
+
+    public List<Integer> getNationalPokedexNumbers() {
+        return nationalPokedexNumbers;
+    }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

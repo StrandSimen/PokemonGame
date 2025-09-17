@@ -30,7 +30,7 @@ public class CardService {
 
     @PostConstruct
     public void initDatabase() throws IOException, InterruptedException {
-        if (cardRepository.count() == 0) {  // Load only if DB is empty
+        if (cardRepository.count() == 0) {
             int page = 1;
             boolean morePages = true;
 
@@ -39,6 +39,7 @@ public class CardService {
                         "?q=supertype:Pok%%C3%%A9mon%%20nationalPokedexNumbers:[1%%20TO%%20151]&pageSize=250&page=%d",
                         page
                 );
+
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(API_URL + query))
                         .header("Accept", "application/json")
@@ -59,10 +60,19 @@ public class CardService {
                     break;
                 }
 
-                // Save unique cards to DB
                 for (Card card : cards) {
-                    if (card.getPokedexNumber() != null && !cardRepository.existsById(card.getPokedexNumber())) {
-                        cardRepository.save(card);
+                    if (card.getNationalPokedexNumbers() != null && card.getName() != null) {
+                        for (Integer dexNum : card.getNationalPokedexNumbers()) {
+                            if (!cardRepository.existsById(dexNum)) {
+                                Card clone = new Card();
+                                clone.setPokedexNumber(dexNum);
+                                clone.setName(card.getName());
+                                clone.setHp(card.getHp());
+                                clone.setTypes(card.getTypes());
+                                clone.setImageUrl(card.getImageUrl());
+                                cardRepository.save(clone);
+                            }
+                        }
                     }
                 }
 
@@ -72,11 +82,14 @@ public class CardService {
                     page++;
                 }
             }
+
             System.out.println("Loaded " + cardRepository.count() + " unique Pokémon into database.");
         } else {
             System.out.println("Database already populated with " + cardRepository.count() + " Pokémon.");
         }
     }
+
+
 
     public List<Card> getAllCachedCards() {
         return cardRepository.findAllByOrderByPokedexNumberAsc();
