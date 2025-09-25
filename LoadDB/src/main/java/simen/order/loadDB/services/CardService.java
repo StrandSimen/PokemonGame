@@ -1,9 +1,9 @@
-package simen.order.card.services;
+package simen.order.loadDB.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import simen.order.card.model.ApiResponse;
-import simen.order.card.model.Card;
-import simen.order.card.repository.CardRepo;
+import simen.order.loadDB.model.ApiResponse;
+import simen.order.loadDB.model.Card;
+import simen.order.loadDB.repository.CardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

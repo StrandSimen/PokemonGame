@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  load-db:
+    build:
+      context: ./LoadDB
+    image: load-db-app
+    container_name: load-db-app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pokemon-db:5432/pokemondb
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      pokemon-db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+    networks:
+      - pokemon-network
+
+  user:
+    build:
+      context: ./User
+    image: user-app
+    container_name: user-app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pokemon-db:5432/pokemondb
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      load-db:
+        condition: service_started
+      pokemon-db:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    networks:
+      - pokemon-network
+
+  pokemon-db:
+    image: postgres:latest
+    container_name: pokemon-db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pokemondb
+    volumes:
+      - pokemon-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d pokemondb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pokemon-network
+
+volumes:
+  pokemon-data:
+
+networks:
+  pokemon-network:
+    driver: bridge

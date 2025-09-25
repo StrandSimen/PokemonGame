@@ -1,7 +1,7 @@
-package simen.order.card.controller;
+package simen.order.loadDB.controller;
 
-import simen.order.card.services.CardService;
-import simen.order.card.model.Card;
+import simen.order.loadDB.services.CardService;
+import simen.order.loadDB.model.Card;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
