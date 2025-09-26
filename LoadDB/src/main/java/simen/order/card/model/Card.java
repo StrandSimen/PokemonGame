@@ -7,31 +7,33 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.Map;
 
-@Entity  // Mark as JPA entity
-@Table(name = "cards")  // Table name in DB
+@Entity
+@Table(name = "cards")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Card {
 
-    @Id  // Primary key
-    private Integer pokedexNumber;  // Use as ID (assuming unique per species)
-
+    @Id
+    private Integer pokedexNumber;
+    @Column(nullable = false)
     private String name;
     private String hp;
-    private String types;  // Store as comma-separated string (e.g., "Grass,Poison")
+    @Column(length = 100)
+    private String types;
+    @Column(length = 500)
     private String imageUrl;
 
     @Transient
     private List<Integer> nationalPokedexNumbers;
 
     @JsonProperty("nationalPokedexNumbers")
-    private void setNationalPokedexNumbers(List<Integer> nationalPokedexNumbers) {
-        this.nationalPokedexNumbers = nationalPokedexNumbers;
+    private void unpackNationalPokedexNumbers(List<Integer> numbers) {
+        this.nationalPokedexNumbers = numbers;
     }
 
     @JsonProperty("types")
-    private void setTypes(String[] types) {
+    private void unpackTypes(String[] types) {
         if (types != null) {
-            this.types = String.join(",", types);  // Convert array to string
+            this.types = String.join(",", types);
         }
     }
 
@@ -42,13 +44,8 @@ public class Card {
         }
     }
 
-    // Getters and Setters
     public Integer getPokedexNumber() { return pokedexNumber; }
     public void setPokedexNumber(Integer pokedexNumber) { this.pokedexNumber = pokedexNumber; }
-
-    public List<Integer> getNationalPokedexNumbers() {
-        return nationalPokedexNumbers;
-    }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -56,9 +53,11 @@ public class Card {
     public String getHp() { return hp; }
     public void setHp(String hp) { this.hp = hp; }
 
-    public String getTypes() { return types; }  // Return as string; split by "," if needed
+    public String getTypes() { return types; }
     public void setTypes(String types) { this.types = types; }
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public List<Integer> getNationalPokedexNumbers() { return nationalPokedexNumbers; }
 }
