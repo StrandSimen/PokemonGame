@@ -1,4 +1,4 @@
-package simen.order.card;
+package simen.order.loadDB;
 
 import org.springframework.boot.test.context.TestConfiguration;
 

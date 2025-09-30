@@ -1,4 +1,4 @@
-package simen.order.card.model;
+package simen.order.loadDB.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
