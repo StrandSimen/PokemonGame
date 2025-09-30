@@ -1,11 +1,14 @@
-# Use full OpenJDK 22 as base image
-FROM openjdk:22-jdk
+# Use Java 22 slim image
+FROM openjdk:22-jdk-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy the JAR file into the container (rename for flexibility)
+# Copy the fat JAR
 COPY target/User-0.0.1-SNAPSHOT.jar app.jar
 
-# Run the application with ENTRYPOINT for fixed execution
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Expose port
+EXPOSE 8081
+
+# Run the app
+ENTRYPOINT ["java","-jar","app.jar"]
