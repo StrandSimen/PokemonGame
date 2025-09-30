@@ -1,8 +1,8 @@
 package simen.order.boosterpack.services;
 
 import org.springframework.stereotype.Service;
-import simen.order.card.model.Card;
-import simen.order.card.repository.CardRepo;
+import simen.order.boosterpack.model.Card;
+import simen.order.boosterpack.repository.CardRepo;
 
 import java.util.*;
 

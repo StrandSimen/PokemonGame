@@ -14,7 +14,7 @@ const BoosterPack: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch("/api/boosterpack/open");
+            const res = await fetch("http://localhost:8080/api/boosterpack/open");
             if (!res.ok) throw new Error("Failed to fetch booster pack");
             const data: Card[] = await res.json();
             setCards(data);

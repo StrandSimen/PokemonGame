@@ -1,22 +1,20 @@
 version: '3.8'
 
 services:
-  load-db:
+  booster-pack:
     build:
-      context: ./LoadDB
-    image: load-db-app
-    container_name: load-db-app
+      context: ./BoosterPack
+    image: booster-pack-app
+    container_name: booster-pack-app
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pokemon-db:5432/pokemondb
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
-      pokemon-db:
-        condition: service_healthy
+      - pokemon-db
     ports:
       - "8080:8080"
-
     networks:
       - pokemon-network
 
@@ -31,12 +29,23 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
-      load-db:
-        condition: service_started
-      pokemon-db:
-        condition: service_healthy
+      - pokemon-db
+      - booster-pack
     ports:
       - "8081:8081"
+    networks:
+      - pokemon-network
+
+  frontend:
+    build:
+      context: ./Frontend
+    image: frontend-app
+    container_name: frontend-app
+    ports:
+      - "5173:5173"
+    depends_on:
+      - booster-pack
+      - user
     networks:
       - pokemon-network
 
@@ -49,6 +58,7 @@ services:
       - POSTGRES_DB=pokemondb
     volumes:
       - pokemon-data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     healthcheck:
