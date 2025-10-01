@@ -1,2 +1,7 @@
-Checklist 
-To start docker LoadDB for pokemon storage to database : docker run -d -p 5432:5432 --name pokemon-db -e POSTGRES_PASSWORD=password -e POSTGRES_USER=admin -e POSTGRES_DB=pokemondb postgres
+**A work in progress project for PG3402.**
+
+This project is a microservice based Pokemon TCG website. Users wil lbe able to:
+* Open booster packs
+* Collect and manage their Pokemon
+* Sell Pokemon
+* Battle against trainers
