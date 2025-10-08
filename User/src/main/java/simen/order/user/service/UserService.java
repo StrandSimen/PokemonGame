@@ -17,31 +17,58 @@ public class UserService {
 
     @PostConstruct
     public void initDefaultUser() {
-        if (userRepository.count() == 0) {
-            User defaultUser = new User();
-            defaultUser.setUsername("defaultUser");
+        User defaultUser = new User();
+        defaultUser.setUsername("defaultUser");
+        userRepository.save(defaultUser);
+    }
 
-            // Initialize inventory with specific Pokémon indices (1-9) and one duplicate
-            Map<Integer, Integer> inventory = new HashMap<>();
-            // Add Pokémon 1 to 8 with amount 1
-            for (int i = 1; i <= 8; i++) {
-                inventory.put(i, 1);
+    public User addToInventory(String username, int pokedexNumber) {
+        User user = getUser(username);
+
+        user.getInventory().merge(pokedexNumber, 1, Integer::sum);
+        return userRepository.save(user);
+    }
+
+    //Vil bli brukt senere når vi har en liste over hele inventory, skal kunne klikke på hvilket som helst kort og selge det
+    public User removeFromInventory(String username, int pokedexNumber) {
+        User user = getUser(username);
+
+        boolean existed = user.getInventory().computeIfPresent(pokedexNumber, (key, value) -> {
+            if (value > 1) {
+                return value - 1;
+            } else {
+                return null;
             }
-            // Add Pokémon 9 with amount 1
-            inventory.put(9, 1);
-            // Add duplicate Pokémon 1 with amount 2 (overwrites the previous entry for ID 1)
-            inventory.put(1, 2);
+        }) != null;
 
-            defaultUser.setInventory(inventory);
-
-            userRepository.save(defaultUser);
-            System.out.println("Created default user with 9 unique Pokémon (1-9) and one duplicate of Pokémon 1 with amount 2.");
+        if (!existed) {
+            throw new RuntimeException("Cannot remove: Pokémon not in inventory");
         }
+
+        return userRepository.save(user);
     }
 
     public Map<Integer, Integer> getPlayerInventory(String username) {
         return userRepository.findById(username)
                 .map(User::getInventory)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
     }
+
+    public User sellCard(String username, int sellPrice) {
+        User user = getUser(username);
+        user.setCoins(user.getCoins() + sellPrice);
+
+        return userRepository.save(user);
+    }
+
+    public int getUserCoins(String username) {
+        User user = getUser(username);
+        return user.getCoins();
+    }
+
+    public User getUser(String username) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found: " + username));
+        return user;
+    }
+
 }

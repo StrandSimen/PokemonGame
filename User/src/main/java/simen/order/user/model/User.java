@@ -18,6 +18,16 @@ public class User {
     @Column(name = "amount") // Value column for the map
     private Map<Integer, Integer> inventory = new HashMap<>(); // Initialize to avoid null
 
+    @Column(name = "coins")
+    private Integer coins = 0;
+
+    public int getCoins() {
+        return coins;
+    }
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
     public String getUsername() {
         return username;
     }
