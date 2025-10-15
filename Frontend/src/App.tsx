@@ -1,10 +1,10 @@
 import React from "react";
-import BoosterPack from "./components/BoosterPack/BoosterPack";
+import MainLayout from "./components/Layout/MainLayout.tsx";
 
 const App: React.FC = () => {
     return (
         <div>
-            <BoosterPack />
+            <MainLayout />
         </div>
     );
 };

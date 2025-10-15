@@ -1,0 +1,14 @@
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+    #background: linear-gradient(to right, #f0f4ff, #e0f7ff);
+    height: 100vh;
+}
+
+.left-panel, .right-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

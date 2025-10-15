@@ -22,4 +22,6 @@ public class BoosterpackController {
     public List<Card> openBooster() {
         return boosterpackService.openBooster();
     }
+
+
 }
