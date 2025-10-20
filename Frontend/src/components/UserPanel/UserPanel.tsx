@@ -23,7 +23,6 @@ const UserPanel: React.FC = () => {
 
             // Fetch inventory
             const invRes = await fetch("http://localhost:8081/api/defaultUser/inventory");
-            console.log(invRes);
             if (!invRes.ok) throw new Error("Failed to fetch inventory");
             const invData: Record<string, number> = await invRes.json();
 

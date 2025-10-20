@@ -19,7 +19,7 @@ public class User {
     private Map<Integer, Integer> inventory = new HashMap<>(); // Initialize to avoid null
 
     @Column(name = "coins")
-    private Integer coins = 0;
+    private Integer coins = 100;
 
     public int getCoins() {
         return coins;

@@ -15,8 +15,13 @@ const BoosterPack: React.FC = () => {
         setError(null);
         try {
             const res = await fetch("http://localhost:8080/api/boosterpack/open");
-            if (!res.ok) throw new Error("Failed to fetch booster pack");
-            const data: Card[] = await res.json();
+            const data = await res.json();
+
+            if (!res.ok) {
+                // Use backend message if available
+                alert(data?.error || "Failed to fetch booster pack");
+                return;            }
+            //const data: Card[] = await res.json();
             setCards(data);
             setCurrentIndex(0);
             setOpened(true);
@@ -35,20 +40,7 @@ const BoosterPack: React.FC = () => {
         }
     }
 
-    const handleAddToInventory = async (card: Card) => {
-        try {
-            const res = await fetch(`http://localhost:8081/api/defaultUser/add/${card.pokedexNumber}`, {
-                method : "POST"
-            });
-            if (!res.ok) throw new Error("Failed to add to inventory");
-            console.log("Added Card", card.pokedexNumber);
-
-            handleNextCard();
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
+    /* VILL BRUKE DENNE SENERE I EN INVENTORY SETTING
     const handleSellCard = async ()=> {
         try {
             const res = await fetch(`http://localhost:8081/api/defaultUser/sell`,
@@ -62,6 +54,8 @@ const BoosterPack: React.FC = () => {
             console.log(err);
         }
     }
+
+     */
 
     const closePackopening = () => {
         setOpened(false);
@@ -91,12 +85,8 @@ const BoosterPack: React.FC = () => {
                         <img src={cards[currentIndex].imageUrl}/>
                     </div>
 
-                    <button className="open-button" onClick={() => handleAddToInventory(cards[currentIndex])}>
-                        Add to Inventory
-                    </button>
-
-                    <button className="open-button" onClick={() => handleSellCard()}>
-                        Sell Card
+                    <button className="open-button" onClick={() => handleNextCard()}>
+                        Next
                     </button>
                 </div>
 

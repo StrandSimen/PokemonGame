@@ -1,5 +1,7 @@
 package simen.order.user.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import simen.order.user.model.User;
 import simen.order.user.service.UserService;
@@ -10,6 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class UserController {
+    private final int boosterPackPrice = 20;
 
     @Autowired
     private UserService userService;
@@ -37,5 +40,17 @@ public class UserController {
     @PostMapping("/{username}/sell")
     public User sellCard(@PathVariable String username, @RequestParam(defaultValue = "20") int sellPrice) {
         return userService.sellCard(username, sellPrice);
+    }
+
+    //Hardcoded to defaultUser for now
+    @PostMapping("defaultUser/spendCoins")
+    public ResponseEntity<String> spendCoins() {
+        User user = userService.getUser("defaultUser");
+        if (user.getCoins() < boosterPackPrice) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough coins");
+        }
+        user.setCoins(user.getCoins() - boosterPackPrice);
+        userService.saveUser(user);
+        return ResponseEntity.ok("Coins deducted");
     }
 }
