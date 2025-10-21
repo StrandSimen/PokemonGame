@@ -1,9 +1,32 @@
-version: '3.8'
 
 services:
+  gateway:
+    build:
+      context: ./gateway
+    image: gateway-app
+    container_name: gateway-app
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
+    depends_on:
+      - consul
+    ports:
+      - "8100:8100"
+    networks:
+      - pokemon-network
+
+  consul:
+      image: hashicorp/consul:latest
+      container_name: consul
+      ports:
+        - "8500:8500"
+      command: "agent -server -bootstrap-expect=1 -ui -client=0.0.0.0"
+      networks:
+        - pokemon-network
+
   booster-pack:
     build:
-      context: ./BoosterPack
+      context: ./boosterpack
     image: booster-pack-app
     container_name: booster-pack-app
     environment:
@@ -11,19 +34,22 @@ services:
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
     depends_on:
       - pokemon-db
       - rabbitmq
+      - consul
 
 
     ports:
-      - "8080:8080"
+      - "8082:8082"
     networks:
       - pokemon-network
 
   user:
     build:
-      context: ./User
+      context: ./user
     image: user-app
     container_name: user-app
     environment:
@@ -31,6 +57,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
     depends_on:
       - pokemon-db
       - booster-pack
@@ -42,14 +70,13 @@ services:
 
   frontend:
     build:
-      context: ./Frontend
+      context: ./frontend
     image: frontend-app
     container_name: frontend-app
     ports:
       - "5173:5173"
     depends_on:
-      - booster-pack
-      - user
+      - gateway
     networks:
       - pokemon-network
 
