@@ -32,18 +32,20 @@ public class UserService {
     //Vil bli brukt senere når vi har en liste over hele inventory, skal kunne klikke på hvilket som helst kort og selge det
     public User removeFromInventory(String username, int pokedexNumber) {
         User user = getUser(username);
+        Map<Integer, Integer> inventory = user.getInventory();
 
-        boolean existed = user.getInventory().computeIfPresent(pokedexNumber, (key, value) -> {
-            if (value > 1) {
-                return value - 1;
-            } else {
-                return null;
-            }
-        }) != null;
-
-        if (!existed) {
-            throw new RuntimeException("Cannot remove: Pokémon not in inventory");
+        if (inventory == null || inventory.isEmpty()) {
+            throw new RuntimeException("Inventory is empty");
         }
+
+        Integer keyToRemove = inventory.containsKey(pokedexNumber)
+                ? pokedexNumber
+                : inventory.keySet().stream()
+                .filter(k -> String.valueOf(k).equals(String.valueOf(pokedexNumber)))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cannot remove: Pokémon not in inventory"));
+
+        inventory.computeIfPresent(keyToRemove, (key, value) -> value > 1 ? value - 1 : null);
 
         return userRepository.save(user);
     }
@@ -54,9 +56,11 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
     }
 
-    public User sellCard(String username, int sellPrice) {
-        User user = getUser(username);
+    public User sellCard(String username, int pokedexNumber, int sellPrice) {
+        User user = removeFromInventory(username, pokedexNumber);
+
         user.setCoins(user.getCoins() + sellPrice);
+
 
         return userRepository.save(user);
     }

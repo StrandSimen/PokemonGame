@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import type {Card} from "../../types/Card.ts";
 import "./UserPanel.css";
 import ashKetchum from "../pictures/ashKetchum.png"
+import { useNavigate } from "react-router-dom";
 
 
 const UserPanel: React.FC = () => {
@@ -9,6 +10,8 @@ const UserPanel: React.FC = () => {
     const[inventory, setInventory] = useState<Card[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const navigate = useNavigate();
     const fetchUserData = async () => {
         try {
             setLoading(true);
@@ -58,21 +61,23 @@ const UserPanel: React.FC = () => {
             <img src={ashKetchum} alt="ashKetchum picture" className="profile-picture"/>
             <p>Coins: {coins}</p>
 
-            <h3>Inventory:</h3>
-            {inventory.length > 0 ? (
-                <div className="card-grid">
-                    {inventory.slice(0, 6).map((card) => (
-                        <div key={card.pokedexNumber} className="user-card">
-                            <img src={card.imageUrl} alt={card.name}/>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <p>No cards in inventory yet.</p>
-            )}
+            <div>
+                <h3>Inventory:</h3>
+                {inventory.length > 0 ? (
+                    <div className="card-grid">
+                        {inventory.slice(0, 6).map((card) => (
+                            <div key={card.pokedexNumber} className="user-card">
+                                <img src={card.imageUrl} alt={card.name}/>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>No cards in inventory yet.</p>
+                )}
+            </div>
 
-            <button className="open-button" onClick={fetchUserData}>
-                Refresh
+            <button className="open-button" onClick={() => navigate("/inventory")}>
+                Open inventory
             </button>
         </div>
     )

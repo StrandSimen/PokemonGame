@@ -37,9 +37,9 @@ public class UserController {
         return userService.removeFromInventory(username, pokedexNumber);
     }
 
-    @PostMapping("/{username}/sell")
-    public User sellCard(@PathVariable String username, @RequestParam(defaultValue = "20") int sellPrice) {
-        return userService.sellCard(username, sellPrice);
+    @PostMapping("/{username}/sell/{pokedexNumber}")
+    public User sellCard(@PathVariable String username, @PathVariable int pokedexNumber, @RequestParam(defaultValue = "20") int sellPrice) {
+        return userService.sellCard(username, pokedexNumber, sellPrice);
     }
 
     //Hardcoded to defaultUser for now
