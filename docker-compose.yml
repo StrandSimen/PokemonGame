@@ -3,7 +3,7 @@ version: '3.8'
 services:
   booster-pack:
     build:
-      context: ./BoosterPack
+      context: ./boosterpack
     image: booster-pack-app
     container_name: booster-pack-app
     environment:
@@ -20,7 +20,7 @@ services:
 
   user:
     build:
-      context: ./User
+      context: ./user
     image: user-app
     container_name: user-app
     environment:
@@ -38,7 +38,7 @@ services:
 
   frontend:
     build:
-      context: ./Frontend
+      context: frontend
     image: frontend-app
     container_name: frontend-app
     ports:

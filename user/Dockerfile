@@ -5,7 +5,7 @@ FROM openjdk:22-jdk-slim
 WORKDIR /app
 
 # Copy the fat JAR
-COPY target/User-0.0.1-SNAPSHOT.jar app.jar
+COPY target/user-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose port
 EXPOSE 8081
