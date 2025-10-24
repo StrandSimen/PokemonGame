@@ -14,15 +14,9 @@ const BoosterPack: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            //const res = await fetch("http://localhost:8080/api/boosterpack/open");
             const res = await fetch("http://localhost:8100/api/boosterpack/open");
-            const data = await res.json();
-
-            if (!res.ok) {
-                // Use backend message if available
-                alert(data?.error || "Failed to fetch booster pack");
-                return;            }
-            //const data: Card[] = await res.json();
+            if (!res.ok) throw new Error("Failed to fetch booster pack");
+            const data: Card[] = await res.json();
             setCards(data);
             setCurrentIndex(0);
             setOpened(true);
@@ -36,8 +30,6 @@ const BoosterPack: React.FC = () => {
     const handleNextCard = () => {
         if (currentIndex < cards.length - 1) {
             setCurrentIndex((prev) => prev + 1);
-        } else {
-            closePackopening();
         }
     }
 
@@ -69,10 +61,20 @@ const BoosterPack: React.FC = () => {
                         <img src={cards[currentIndex].imageUrl}/>
                     </div>
 
-                    <button className="open-button" onClick={() => handleNextCard()}>
-                        Next
-                    </button>
+                    {currentIndex < cards.length - 1 ? (
+                        <button className="open-button" onClick={handleNextCard}>
+                            Next Card
+                        </button>
+                    ) : (
+                        <div>
+                            <p>That was all the cards!</p>
+                            <button className="open-button" onClick={closePackopening}>
+                                Close
+                            </button>
+                        </div>
+                    )}
                 </div>
+
 
             )}
         </div>

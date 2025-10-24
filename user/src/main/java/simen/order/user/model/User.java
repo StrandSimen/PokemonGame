@@ -12,7 +12,7 @@ public class User {
     @Column(name = "username") // Match the column name in user_username
     private String username;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "inventory", joinColumns = @JoinColumn(name = "username", referencedColumnName = "username"))
     @MapKeyColumn(name = "pokedex_number") // Key column for the map
     @Column(name = "amount") // Value column for the map

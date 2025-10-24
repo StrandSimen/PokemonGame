@@ -18,14 +18,14 @@ const UserPanel: React.FC = () => {
             setError(null);
 
             // Fetch coins
-            const coinsRes = await fetch("http://localhost:8081/api/defaultUser/coins");
+            const coinsRes = await fetch("http://localhost:8100/api/defaultUser/coins");
             if (!coinsRes.ok) throw new Error("Failed to fetch user coins");
             const coinsData = await coinsRes.json();
             setCoins(Number(coinsData)); // just use the number directly
 
 
             // Fetch inventory
-            const invRes = await fetch("http://localhost:8081/api/defaultUser/inventory");
+            const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
             if (!invRes.ok) throw new Error("Failed to fetch inventory");
             const invData: Record<string, number> = await invRes.json();
 
@@ -33,7 +33,7 @@ const UserPanel: React.FC = () => {
 
             const card: Card[] = await Promise.all(
                 pokedexNumbers.map(async (id) => {
-                    const res = await fetch(`http://localhost:8080/api/cards/${id}`);
+                    const res = await fetch(`http://localhost:8100/api/cards/${id}`);
                     if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
                     return res.json() as Promise<Card>;
                 })

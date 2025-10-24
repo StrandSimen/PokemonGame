@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>simen.order</groupId>
-    <artifactId>LoadDB</artifactId>
+    <artifactId>loaddb</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>LoadDB</name>
     <description>LoadDB</description>

@@ -16,7 +16,7 @@ const Inventory: React.FC = () => {
                 setLoading(true);
                 setError(null);
 
-                const invRes = await fetch("http://localhost:8081/api/defaultUser/inventory");
+                const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
                 if (!invRes.ok) throw new Error("Failed to fetch inventory");
                 const invData: Record<string, number> = await invRes.json();
 
@@ -24,7 +24,7 @@ const Inventory: React.FC = () => {
 
                 const cards: Card[] = await Promise.all(
                     pokedexNumbers.map(async (id) => {
-                        const res = await fetch(`http://localhost:8080/api/cards/${id}`);
+                        const res = await fetch(`http://localhost:8100/api/cards/${id}`);
                         if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
                         return res.json() as Promise<Card>;
                     })
@@ -43,7 +43,7 @@ const Inventory: React.FC = () => {
 
     const handleSellCard = async (cardId: number) => {
         try {
-            const res = await fetch(`http://localhost:8081/api/defaultUser/sell/${cardId}?sellPrice=20`, {
+            const res = await fetch(`http://localhost:8100/api/defaultUser/sell/${cardId}?sellPrice=20`, {
                 method: "POST",
             });
             if (!res.ok) throw new Error("Failed to sell card");

@@ -1,6 +1,10 @@
 package simen.order.boosterpack.services;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -13,11 +17,19 @@ import java.util.*;
 public class BoosterpackService {
     private final CardRepo cardRepo;
     private final RestTemplate restTemplate;
+    private final RabbitTemplate rabbitTemplate;
     private final Random random = new Random();
 
-    public BoosterpackService(CardRepo cardRepo) {
+    @Autowired
+    public BoosterpackService(CardRepo cardRepo, RabbitTemplate rabbitTemplate) {
         this.cardRepo = cardRepo;
         this.restTemplate = new RestTemplate();
+        this.rabbitTemplate = rabbitTemplate;
+    }
+
+    @Bean
+    public Queue boosterQueue() {
+        return new Queue("booster.queue", false); // Non-durable queue
     }
 
     public List<Card> openBooster() {
@@ -51,6 +63,14 @@ public class BoosterpackService {
                 System.err.println("Failed to add card " + card.getPokedexNumber() + " to inventory");
             }
         }
+
+        // Send booster pack details to RabbitMQ
+        String message = booster.stream()
+                .map(card -> card.getPokedexNumber() + ":" + card.getName())
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("No cards");
+        rabbitTemplate.convertAndSend("booster.queue", message);
+
 
         return booster;
     }
