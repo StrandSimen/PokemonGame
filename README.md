@@ -7,19 +7,55 @@ Open booster packs
 * Sell Pokemon
 * Battle against trainers
 
-How to run:
-* cd BoosterPack
-* mvn clean install
-* cd User
-* mvn clean install
-* docker compose up
+## Architecture
 
-Testing links:
+This project uses a microservices architecture with:
+- **Spring Cloud Gateway**: API Gateway with load balancing
+- **Consul**: Service discovery and health checking
+- **RabbitMQ**: Message broker for async communication
+- **PostgreSQL**: Database
+- **React Frontend**: User interface
 
-http://localhost:5173/
+## How to run:
+
+### Build the services:
+```cmd
+cd boosterpack
+mvn clean install
+cd ..\user
+mvn clean install
+cd ..\gateway
+mvn clean install
+cd ..
+```
+
+### Start with Docker Compose:
+
+**Standard deployment (single instance):**
+```cmd
+docker-compose up --build
+```
+
+**Multi-instance deployment (scaled):**
+```cmd
+docker-compose up --build --scale booster-pack=3 --scale user=2
+```
+
+## Testing links:
+
+**Frontend**: http://localhost:5173/
+
+**Consul UI** (Service Discovery): http://localhost:8500
+
+**RabbitMQ Management**: http://localhost:15672 (guest/guest)
 
 After opening a BoosterPack, either add it to inventory or sell it and check:
 
-http://localhost:8081/api/defaultUser/inventory
+**User Inventory**: http://localhost:8100/api/defaultUser/inventory
 
-http://localhost:8081/api/defaultUser/coins
+**User Coins**: http://localhost:8100/api/defaultUser/coins
+
+## Monitoring
+
+- **Consul Dashboard**: http://localhost:8500 - View all service instances and health status
+- **Service Health**: http://localhost:8100/actuator/health - Gateway health endpoint
