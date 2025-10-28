@@ -14,11 +14,13 @@ spring:
         health-check-path: /actuator/health
         prefer-ip-address: false
         health-check-url: http://gateway:8100/actuator/health
+        acl-token:
       config:
         data-key: application.yml
         format: yaml
         default-context: defaults
         prefixes: config
+        acl-token:
       host: consul
     gateway:
       server:

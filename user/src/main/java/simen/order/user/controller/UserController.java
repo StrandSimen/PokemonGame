@@ -1,5 +1,6 @@
 package simen.order.user.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +8,9 @@ import simen.order.user.model.User;
 import simen.order.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -16,6 +20,26 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Value("${spring.application.name:user}")
+    private String applicationName;
+
+    @Value("${server.port:8081}")
+    private String serverPort;
+
+    @GetMapping("/info")
+    public ResponseEntity<Map<String, String>> getInstanceInfo() {
+        Map<String, String> info = new HashMap<>();
+        try {
+            info.put("service", applicationName);
+            info.put("hostname", InetAddress.getLocalHost().getHostName());
+            info.put("ip", InetAddress.getLocalHost().getHostAddress());
+            info.put("port", serverPort);
+        } catch (UnknownHostException e) {
+            info.put("error", "Could not retrieve host information");
+        }
+        return ResponseEntity.ok(info);
+    }
 
     @GetMapping("/{username}/inventory")
     public Map<Integer, Integer> getPlayerInventory(@PathVariable String username) {
