@@ -26,6 +26,10 @@ spring:
       server:
         webflux:
           routes:
+            - id: gym
+              uri: lb://autoplayers/
+              predicates:
+                - Path=/api/gym/**
             - id: boosterpack
               uri: lb://boosterpack/
               predicates:

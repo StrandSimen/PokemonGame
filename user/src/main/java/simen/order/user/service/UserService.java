@@ -103,4 +103,28 @@ public class UserService {
         System.out.println("Updated inventory with new booster pack: " + inventory);
     }
 
+    @RabbitListener(queues = "gym.queue")
+    public void processGymReward(String message) {
+        try {
+            // Parse message format: "BATTLE_REWARD:username:coins"
+            if (message.startsWith("BATTLE_REWARD:")) {
+                String[] parts = message.split(":");
+                if (parts.length == 3) {
+                    String username = parts[1];
+                    int coins = Integer.parseInt(parts[2]);
+
+                    User user = userRepository.findById(username)
+                            .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+                    user.setCoins(user.getCoins() + coins);
+                    userRepository.save(user);
+
+                    System.out.println("Awarded " + coins + " coins to " + username + " for gym battle victory!");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error processing gym reward: " + e.getMessage());
+        }
+    }
+
 }

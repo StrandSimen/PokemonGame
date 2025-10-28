@@ -88,6 +88,31 @@ services:
     networks:
       - pokemon-network
 
+  autoplayers:
+    build:
+      context: ./autoplayers
+    image: autoplayers-app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pokemon-db:5432/pokemondb
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
+      - SERVER_PORT=8083
+    depends_on:
+      - pokemon-db
+      - rabbitmq
+      - consul
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - pokemon-network
+
   frontend:
     build:
       context: ./frontend
