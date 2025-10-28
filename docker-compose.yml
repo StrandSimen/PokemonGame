@@ -107,6 +107,7 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=pokemondb
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - pokemon-data:/var/lib/postgresql/data
       - ./db-init:/docker-entrypoint-initdb.d
