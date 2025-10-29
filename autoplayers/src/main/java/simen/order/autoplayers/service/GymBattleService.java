@@ -114,26 +114,26 @@ public class GymBattleService {
     private boolean simulateBattle(List<Card> playerCards, List<Card> trainerCards, String trainerType, StringBuilder log) {
         log.append("=== BATTLE START ===\n\n");
 
-        int playerTeamHP = 0;
-        int trainerTeamHP = 0;
-
-        // Calculate total HP
+        // Display starting teams
+        log.append("Player's Team:\n");
         for (Card card : playerCards) {
             int hp = parseHP(card.getHp());
-            playerTeamHP += hp;
-            log.append("Player's ").append(card.getName()).append(" (HP: ").append(hp).append(")\n");
+            log.append("  ").append(card.getName()).append(" (HP: ").append(hp).append(")\n");
         }
         log.append("\nVS\n\n");
+        log.append("Trainer's Team:\n");
         for (Card card : trainerCards) {
             int hp = parseHP(card.getHp());
-            trainerTeamHP += hp;
-            log.append("Trainer's ").append(card.getName()).append(" (HP: ").append(hp).append(")\n");
+            log.append("  ").append(card.getName()).append(" (HP: ").append(hp).append(")\n");
         }
 
         log.append("\n=== BATTLE ROUNDS ===\n\n");
 
         Random random = new Random();
         int round = 1;
+
+        int playerPokemonFainted = 0;
+        int trainerPokemonFainted = 0;
 
         // Battle each pokemon
         for (int i = 0; i < 3; i++) {
@@ -163,6 +163,7 @@ public class GymBattleService {
 
                 if (trainerHP <= 0) {
                     log.append("  ✓ ").append(trainerPokemon.getName()).append(" fainted!\n\n");
+                    trainerPokemonFainted++;
                     break;
                 }
 
@@ -179,15 +180,18 @@ public class GymBattleService {
 
                 if (playerHP <= 0) {
                     log.append("  ✗ ").append(playerPokemon.getName()).append(" fainted!\n\n");
+                    playerPokemonFainted++;
                     break;
                 }
             }
         }
 
-        // Determine winner based on surviving HP
-        boolean playerWon = playerTeamHP > trainerTeamHP;
+        // Determine winner based on who has more Pokemon standing
+        boolean playerWon = trainerPokemonFainted > playerPokemonFainted;
 
         log.append("=== BATTLE END ===\n");
+        log.append("Player's Pokemon fainted: ").append(playerPokemonFainted).append("/3\n");
+        log.append("Trainer's Pokemon fainted: ").append(trainerPokemonFainted).append("/3\n\n");
         if (playerWon) {
             log.append("🎉 YOU WON! Congratulations!\n");
         } else {

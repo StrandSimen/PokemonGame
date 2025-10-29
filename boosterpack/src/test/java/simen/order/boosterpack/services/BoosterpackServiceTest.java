@@ -50,10 +50,14 @@ class BoosterpackServiceTest {
             testCards.add(card);
         }
 
-        // Inject mocked RestTemplate using reflection
+        // Inject mocked RestTemplate and spendCoinsUrl using reflection
         Field restTemplateField = BoosterpackService.class.getDeclaredField("restTemplate");
         restTemplateField.setAccessible(true);
         restTemplateField.set(boosterpackService, restTemplate);
+
+        Field spendCoinsUrlField = BoosterpackService.class.getDeclaredField("spendCoinsUrl");
+        spendCoinsUrlField.setAccessible(true);
+        spendCoinsUrlField.set(boosterpackService, "http://gateway:8100/api/defaultUser/spendCoins");
     }
 
     @Test
@@ -79,19 +83,12 @@ class BoosterpackServiceTest {
 
         // Verify coin spending was called
         verify(restTemplate).postForEntity(
-                eq("http://user:8081/api/defaultUser/spendCoins"),
+                eq("http://gateway:8100/api/defaultUser/spendCoins"),
                 isNull(),
                 eq(String.class)
         );
 
-        // Verify cards were added to inventory (10 times)
-        verify(restTemplate, times(10)).postForEntity(
-                startsWith("http://user:8081/api/defaultUser/add/"),
-                isNull(),
-                eq(String.class)
-        );
-
-        // Verify RabbitMQ message was sent
+        // Verify RabbitMQ message was sent (cards are added via RabbitMQ now)
         verify(rabbitTemplate).convertAndSend(eq("booster.queue"), anyString());
     }
 
@@ -99,7 +96,7 @@ class BoosterpackServiceTest {
     void testOpenBooster_NotEnoughCoins() {
         // Arrange
         when(restTemplate.postForEntity(
-                eq("http://user:8081/api/defaultUser/spendCoins"),
+                eq("http://gateway:8100/api/defaultUser/spendCoins"),
                 isNull(),
                 eq(String.class)
         )).thenThrow(HttpClientErrorException.class);
@@ -117,34 +114,6 @@ class BoosterpackServiceTest {
     }
 
     @Test
-    void testOpenBooster_FailedToAddCard() {
-        // Arrange
-        when(cardRepo.findAllByOrderByPokedexNumberAsc()).thenReturn(testCards);
-        when(restTemplate.postForEntity(
-                eq("http://user:8081/api/defaultUser/spendCoins"),
-                isNull(),
-                eq(String.class)
-        )).thenReturn(null);
-
-        // Simulate failure when adding cards to inventory
-        when(restTemplate.postForEntity(
-                startsWith("http://user:8081/api/defaultUser/add/"),
-                isNull(),
-                eq(String.class)
-        )).thenThrow(HttpClientErrorException.class);
-
-        // Act - should not throw exception, just log error
-        List<Card> result = boosterpackService.openBooster();
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(10, result.size(), "Booster should still return 10 cards even if adding fails");
-
-        // Verify RabbitMQ message was still sent
-        verify(rabbitTemplate).convertAndSend(eq("booster.queue"), anyString());
-    }
-
-    @Test
     void testOpenBooster_RabbitMQMessageFormat() {
         // Arrange
         when(cardRepo.findAllByOrderByPokedexNumberAsc()).thenReturn(testCards);
@@ -152,10 +121,12 @@ class BoosterpackServiceTest {
                 .thenReturn(null);
 
         // Act
-        boosterpackService.openBooster();
+        List<Card> result = boosterpackService.openBooster();
 
-        // Assert - verify RabbitMQ message was sent
+        // Assert - verify RabbitMQ message format contains card info
         verify(rabbitTemplate, times(1)).convertAndSend(eq("booster.queue"), anyString());
+        assertNotNull(result);
+        assertEquals(10, result.size());
     }
 }
 

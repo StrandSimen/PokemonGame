@@ -36,7 +36,7 @@ public class GymTrainerService {
         trainers.put("Erika", new GymTrainer(
                 "Erika",
                 "Grass",
-                Arrays.asList(45, 71, 3) // Vileplume, Victreebel, Venusaur
+                Arrays.asList(45, 71, 1) // Vileplume, Victreebel, Bulbasaur
         ));
     }
 

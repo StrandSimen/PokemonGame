@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Card } from "../../types/Card";
 import type { GymTrainer } from "../../types/GymBattle";
+import type { Card } from "../../types/Card";
 import "./BattleSetup.css";
 
 const BattleSetup: React.FC = () => {
@@ -35,7 +35,6 @@ const BattleSetup: React.FC = () => {
                 );
                 setTrainerCards(tCards);
 
-                // Fetch player inventory
                 const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
                 if (!invRes.ok) throw new Error("Failed to fetch inventory");
                 const invData: Record<string, number> = await invRes.json();
@@ -138,4 +137,3 @@ const BattleSetup: React.FC = () => {
 };
 
 export default BattleSetup;
-

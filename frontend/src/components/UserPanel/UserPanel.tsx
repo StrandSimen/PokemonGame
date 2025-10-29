@@ -5,6 +5,7 @@ import ashKetchum from "../pictures/ashKetchum.png"
 import { useNavigate } from "react-router-dom";
 
 
+
 const UserPanel: React.FC = () => {
     const[coins, setCoins] = useState<number>(0);
     const[inventory, setInventory] = useState<Card[]>([]);

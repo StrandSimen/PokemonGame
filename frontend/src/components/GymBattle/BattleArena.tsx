@@ -22,7 +22,6 @@ const BattleArena: React.FC = () => {
 
         const startBattle = async () => {
             try {
-                setLoading(true);
                 const res = await fetch("http://localhost:8100/api/gym/battle", {
                     method: "POST",
                     headers: {
@@ -144,4 +143,3 @@ const BattleArena: React.FC = () => {
 };
 
 export default BattleArena;
-

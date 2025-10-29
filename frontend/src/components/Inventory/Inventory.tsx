@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import type { Card } from "../../types/Card";
+import "./Inventory.css";
+import type { Card } from "../../types/Card.ts";
 import { useNavigate } from "react-router-dom";
-import "./Inventory.css"
 
 const Inventory: React.FC = () => {
     const [inventory, setInventory] = useState<Card[]>([]);
@@ -15,7 +15,6 @@ const Inventory: React.FC = () => {
             try {
                 setLoading(true);
                 setError(null);
-
                 const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
                 if (!invRes.ok) throw new Error("Failed to fetch inventory");
                 const invData: Record<string, number> = await invRes.json();

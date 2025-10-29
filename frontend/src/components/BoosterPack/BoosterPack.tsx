@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import type { Card } from "../../types/Card";
 import "./BoosterPack.css";
+import type { Card } from "../../types/Card";
 
 const BoosterPack: React.FC = () => {
     const [cards, setCards] = useState<Card[]>([]);
@@ -14,15 +14,14 @@ const BoosterPack: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            //const res = await fetch("http://localhost:8080/api/boosterpack/open");
             const res = await fetch("http://localhost:8100/api/boosterpack/open");
             const data = await res.json();
 
             if (!res.ok) {
-                // Use backend message if available
                 alert(data?.error || "Failed to fetch booster pack");
-                return;            }
-            //const data: Card[] = await res.json();
+                return;
+            }
+
             setCards(data);
             setCurrentIndex(0);
             setOpened(true);
