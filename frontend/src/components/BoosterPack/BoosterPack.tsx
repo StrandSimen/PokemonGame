@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./BoosterPack.css";
 import type { Card } from "../../types/Card";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 
 const BoosterPack: React.FC = () => {
     const [cards, setCards] = useState<Card[]>([]);
@@ -14,7 +15,7 @@ const BoosterPack: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch("http://localhost:8100/api/boosterpack/open");
+            const res = await fetch(API_ENDPOINTS.BOOSTER_OPEN);
             const data = await res.json();
 
             if (!res.ok) {

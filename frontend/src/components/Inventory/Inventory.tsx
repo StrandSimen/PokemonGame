@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Inventory.css";
 import type { Card } from "../../types/Card.ts";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 
 const Inventory: React.FC = () => {
     const [inventory, setInventory] = useState<Card[]>([]);
@@ -15,7 +16,7 @@ const Inventory: React.FC = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
+                const invRes = await fetch(API_ENDPOINTS.USER_INVENTORY);
                 if (!invRes.ok) throw new Error("Failed to fetch inventory");
                 const invData: Record<string, number> = await invRes.json();
 
@@ -23,7 +24,7 @@ const Inventory: React.FC = () => {
 
                 const cards: Card[] = await Promise.all(
                     pokedexNumbers.map(async (id) => {
-                        const res = await fetch(`http://localhost:8100/api/cards/${id}`);
+                        const res = await fetch(API_ENDPOINTS.CARD_BY_ID(Number(id)));
                         if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
                         return res.json() as Promise<Card>;
                     })
@@ -42,7 +43,7 @@ const Inventory: React.FC = () => {
 
     const handleSellCard = async (cardId: number) => {
         try {
-            const res = await fetch(`http://localhost:8100/api/defaultUser/sell/${cardId}?sellPrice=20`, {
+            const res = await fetch(API_ENDPOINTS.USER_SELL(cardId, 20), {
                 method: "POST",
             });
             if (!res.ok) throw new Error("Failed to sell card");

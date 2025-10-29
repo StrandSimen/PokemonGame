@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { GymTrainer } from "../../types/GymBattle";
 import type { Card } from "../../types/Card";
 import "./BattleSetup.css";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 
 const BattleSetup: React.FC = () => {
     const { trainerName } = useParams<{ trainerName: string }>();
@@ -20,7 +21,7 @@ const BattleSetup: React.FC = () => {
                 setLoading(true);
 
                 // Fetch trainer data
-                const trainerRes = await fetch(`http://localhost:8100/api/gym/trainers/${trainerName}`);
+                const trainerRes = await fetch(API_ENDPOINTS.GYM_TRAINER_BY_NAME(trainerName!));
                 if (!trainerRes.ok) throw new Error("Failed to fetch trainer");
                 const trainerData: GymTrainer = await trainerRes.json();
                 setTrainer(trainerData);
@@ -28,20 +29,20 @@ const BattleSetup: React.FC = () => {
                 // Fetch trainer's cards
                 const tCards: Card[] = await Promise.all(
                     trainerData.pokemonTeam.map(async (id) => {
-                        const res = await fetch(`http://localhost:8100/api/cards/${id}`);
+                        const res = await fetch(API_ENDPOINTS.CARD_BY_ID(id));
                         if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
                         return res.json() as Promise<Card>;
                     })
                 );
                 setTrainerCards(tCards);
 
-                const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
+                const invRes = await fetch(API_ENDPOINTS.USER_INVENTORY);
                 if (!invRes.ok) throw new Error("Failed to fetch inventory");
                 const invData: Record<string, number> = await invRes.json();
 
                 const cards: Card[] = await Promise.all(
                     Object.keys(invData).map(async (id) => {
-                        const res = await fetch(`http://localhost:8100/api/cards/${id}`);
+                        const res = await fetch(API_ENDPOINTS.CARD_BY_ID(Number(id)));
                         if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
                         return res.json() as Promise<Card>;
                     })

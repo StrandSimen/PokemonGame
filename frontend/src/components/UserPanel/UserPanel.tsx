@@ -3,6 +3,7 @@ import type {Card} from "../../types/Card.ts";
 import "./UserPanel.css";
 import ashKetchum from "../pictures/ashKetchum.png"
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 
 
 
@@ -19,14 +20,14 @@ const UserPanel: React.FC = () => {
             setError(null);
 
             // Fetch coins
-            const coinsRes = await fetch("http://localhost:8100/api/defaultUser/coins");
+            const coinsRes = await fetch(API_ENDPOINTS.USER_COINS);
             if (!coinsRes.ok) throw new Error("Failed to fetch user coins");
             const coinsData = await coinsRes.json();
             setCoins(Number(coinsData)); // just use the number directly
 
 
             // Fetch inventory
-            const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
+            const invRes = await fetch(API_ENDPOINTS.USER_INVENTORY);
             if (!invRes.ok) throw new Error("Failed to fetch inventory");
             const invData: Record<string, number> = await invRes.json();
 
@@ -34,7 +35,7 @@ const UserPanel: React.FC = () => {
 
             const card: Card[] = await Promise.all(
                 pokedexNumbers.map(async (id) => {
-                    const res = await fetch(`http://localhost:8100/api/cards/${id}`);
+                    const res = await fetch(API_ENDPOINTS.CARD_BY_ID(Number(id)));
                     if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
                     return res.json() as Promise<Card>;
                 })

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { GymTrainer } from "../../types/GymBattle";
 import type { Card } from "../../types/Card";
 import "./TrainerSelection.css";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 
 const TrainerSelection: React.FC = () => {
     const [trainers, setTrainers] = useState<Record<string, GymTrainer>>({});
@@ -16,7 +17,7 @@ const TrainerSelection: React.FC = () => {
         const fetchTrainers = async () => {
             try {
                 setLoading(true);
-                const res = await fetch("http://localhost:8100/api/gym/trainers");
+                const res = await fetch(API_ENDPOINTS.GYM_TRAINERS);
                 if (!res.ok) throw new Error("Failed to fetch trainers");
                 const data: Record<string, GymTrainer> = await res.json();
                 setTrainers(data);
@@ -37,7 +38,7 @@ const TrainerSelection: React.FC = () => {
         try {
             const cards: Card[] = await Promise.all(
                 trainer.pokemonTeam.map(async (id) => {
-                    const res = await fetch(`http://localhost:8100/api/cards/${id}`);
+                    const res = await fetch(API_ENDPOINTS.CARD_BY_ID(id));
                     if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
                     return res.json() as Promise<Card>;
                 })

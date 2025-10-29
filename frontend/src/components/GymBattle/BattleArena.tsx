@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import type { BattleResult } from "../../types/GymBattle";
 import "./BattleArena.css";
+import { API_ENDPOINTS } from "../../config/apiConfig";
 
 const BattleArena: React.FC = () => {
     const { trainerName } = useParams<{ trainerName: string }>();
@@ -22,7 +23,7 @@ const BattleArena: React.FC = () => {
 
         const startBattle = async () => {
             try {
-                const res = await fetch("http://localhost:8100/api/gym/battle", {
+                const res = await fetch(API_ENDPOINTS.GYM_BATTLE, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
