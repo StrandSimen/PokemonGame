@@ -18,18 +18,9 @@ This project uses a microservices architecture with:
 
 ## How to run:
 
-### Build the services:
-```cmd
-cd boosterpack
-mvn clean install
-cd ..\user
-mvn clean install
-cd ..\gateway
-mvn clean install
-cd ..
-```
-
 ### Start with Docker Compose:
+
+Docker bygger automatisk alle services med Maven wrapper når du kjører `--build` flagget.
 
 **Standard deployment (single instance):**
 ```cmd
@@ -39,6 +30,21 @@ docker-compose up --build
 **Multi-instance deployment (scaled):**
 ```cmd
 docker-compose up --build --scale booster-pack=3 --scale user=2 --scale autoplayers=2
+```
+
+### Manuell bygging (valgfritt):
+
+Hvis du ønsker å bygge services manuelt før Docker-bygging:
+```cmd
+cd boosterpack
+mvnw clean install
+cd ..\user
+mvnw clean install
+cd ..\gateway
+mvnw clean install
+cd ..\autoplayers
+mvnw clean install
+cd ..
 ```
 
 
