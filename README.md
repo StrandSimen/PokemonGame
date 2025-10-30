@@ -38,10 +38,9 @@ docker-compose up --build
 
 **Multi-instance deployment (scaled):**
 ```cmd
-docker-compose up --build --scale booster-pack=3 --scale user=2
+docker-compose up --build --scale booster-pack=3 --scale user=2 --scale autoplayers=2
 ```
 
-For detailed scaling documentation, see **[SCALING.md](SCALING.md)**
 
 ## Testing links:
 
