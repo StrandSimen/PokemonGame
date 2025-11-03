@@ -72,11 +72,11 @@ class BoosterpackServiceTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(10, result.size(), "Booster pack should contain exactly 10 cards");
+        assertEquals(11, result.size(), "Booster pack should contain exactly 11 cards");
 
         // Verify unique cards
         long uniqueCards = result.stream().distinct().count();
-        assertEquals(10, uniqueCards, "All cards in booster should be unique");
+        assertEquals(11, uniqueCards, "All cards in booster should be unique");
 
         // Verify all cards are from the available pool
         assertTrue(testCards.containsAll(result), "All cards should be from available pool");
@@ -126,7 +126,7 @@ class BoosterpackServiceTest {
         // Assert - verify RabbitMQ message format contains card info
         verify(rabbitTemplate, times(1)).convertAndSend(eq("booster.queue"), anyString());
         assertNotNull(result);
-        assertEquals(10, result.size());
+        assertEquals(11, result.size());
     }
 }
 

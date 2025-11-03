@@ -26,139 +26,173 @@
 .gym-container h1 {
     text-align: center;
     color: #1e293b;
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .trainer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .trainer-card {
-    padding: 2rem;
-    border-radius: 1.2rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     text-align: center;
     color: white;
+    position: relative;
+}
+
+.trainer-profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
+    background: white;
 }
 
 .trainer-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
 }
 
 .trainer-card h2 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.6rem;
+    margin-bottom: 0.4rem;
 }
 
 .trainer-type {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
 .trainer-badge {
-    font-size: 1.5rem;
-    margin: 1rem 0;
+    font-size: 1.2rem;
+    margin: 0.8rem 0;
 }
 
 .select-button {
     background-color: rgba(255, 255, 255, 0.3);
     color: white;
     font-weight: bold;
-    padding: 0.8rem 2rem;
+    padding: 0.6rem 1.5rem;
     border: 2px solid white;
     border-radius: 0.5rem;
     cursor: pointer;
-    margin-top: 1rem;
+    margin-top: 0.8rem;
     transition: all 0.25s ease;
 }
 
 .select-button:hover {
     background-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 /* Trainer Detail View */
 .trainer-detail {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     background: white;
-    padding: 2rem;
-    border-radius: 1.2rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.trainer-detail-profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 5px solid #e2e8f0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    background: white;
 }
 
 .trainer-detail h1 {
     color: #1e293b;
+    font-size: 1.8rem;
 }
 
 .detail-type {
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #64748b;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
 .detail-badge {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #f59e0b;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .trainer-detail h3 {
     text-align: center;
     color: #1e293b;
-    font-size: 1.8rem;
-    margin: 2rem 0 1rem 0;
+    font-size: 1.4rem;
+    margin: 1.5rem 0 1rem 0;
 }
 
 .trainer-team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .trainer-pokemon-card {
     background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
-    border-radius: 1rem;
-    padding: 1rem;
+    border-radius: 0.8rem;
+    padding: 0.8rem;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
     transition: transform 0.2s ease;
 }
 
 .trainer-pokemon-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 .trainer-pokemon-card img {
     width: 100%;
     height: auto;
-    border-radius: 0.5rem;
+    border-radius: 0.4rem;
+    max-height: 180px;
+    object-fit: contain;
 }
 
 .card-name {
     font-weight: bold;
     color: #1e293b;
-    margin-top: 0.5rem;
-    font-size: 1.1rem;
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
 }
 
 .card-hp {
     color: #64748b;
     font-weight: 600;
+    font-size: 0.85rem;
 }
 
 .action-buttons {

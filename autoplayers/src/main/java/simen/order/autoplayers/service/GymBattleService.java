@@ -243,5 +243,35 @@ public class GymBattleService {
     public List<GymBattle> getWonBattles(String username) {
         return gymBattleRepository.findByUsernameAndPlayerWon(username, true);
     }
+
+    public List<String> getEarnedBadges(String username) {
+        List<GymBattle> wonBattles = getWonBattles(username);
+        Set<String> uniqueBadges = new HashSet<>();
+
+        for (GymBattle battle : wonBattles) {
+            if (battle.getBadgeEarned() != null && !battle.getBadgeEarned().isEmpty()) {
+                uniqueBadges.add(battle.getBadgeEarned());
+            }
+        }
+
+        return new ArrayList<>(uniqueBadges);
+    }
+
+    public Map<String, Object> getBadgeProgress(String username) {
+        List<String> earnedBadges = getEarnedBadges(username);
+
+        Map<String, Object> progress = new HashMap<>();
+        progress.put("earnedBadges", earnedBadges);
+        progress.put("totalBadges", BADGE_MAP.size());
+        progress.put("earnedCount", earnedBadges.size());
+        progress.put("allBadges", new ArrayList<>(BADGE_MAP.values()));
+
+        return progress;
+    }
+
+    public void clearBattleHistory(String username) {
+        List<GymBattle> battles = gymBattleRepository.findByUsername(username);
+        gymBattleRepository.deleteAll(battles);
+    }
 }
 

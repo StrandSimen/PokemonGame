@@ -39,9 +39,9 @@ public class BoosterpackService {
         List<Card> allCards = cardRepo.findAllByOrderByPokedexNumberAsc();
         List<Card> booster = new ArrayList<>();
 
-        // Trekker 10 unike random kort
+        // Trekker 11 unike random kort
         Set<Integer> chosenIndexes = new HashSet<>();
-        while (chosenIndexes.size() < 10) {
+        while (chosenIndexes.size() < 11) {
             int index = random.nextInt(allCards.size());
             if (chosenIndexes.add(index)) {
                 booster.add(allCards.get(index));

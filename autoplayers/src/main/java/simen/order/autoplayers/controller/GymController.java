@@ -85,6 +85,24 @@ public class GymController {
         return ResponseEntity.ok(battles);
     }
 
+    @GetMapping("/badges/{username}")
+    public ResponseEntity<List<String>> getEarnedBadges(@PathVariable String username) {
+        List<String> badges = gymBattleService.getEarnedBadges(username);
+        return ResponseEntity.ok(badges);
+    }
+
+    @GetMapping("/badges/{username}/progress")
+    public ResponseEntity<Map<String, Object>> getBadgeProgress(@PathVariable String username) {
+        Map<String, Object> progress = gymBattleService.getBadgeProgress(username);
+        return ResponseEntity.ok(progress);
+    }
+
+    @DeleteMapping("/battles/{username}")
+    public ResponseEntity<Map<String, String>> clearBattleHistory(@PathVariable String username) {
+        gymBattleService.clearBattleHistory(username);
+        return ResponseEntity.ok(Map.of("message", "Battle history cleared for user: " + username));
+    }
+
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of("status", "UP", "service", "autoplayers"));

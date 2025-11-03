@@ -1,6 +1,6 @@
 .battle-setup-container {
     min-height: 100vh;
-    padding: 2rem;
+    padding: 1.5rem;
     background: linear-gradient(135deg, #a5f3fc, #93c5fd);
     font-family: "Poppins", sans-serif;
 }
@@ -8,137 +8,111 @@
 .battle-setup-container h1 {
     text-align: center;
     color: #1e293b;
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    margin-bottom: 0.4rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .setup-subtitle {
     text-align: center;
     color: #475569;
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.setup-content {
-    max-width: 1600px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2rem;
-}
-
-/* Trainer Section */
-.trainer-section {
+/* Matchup Preview */
+.matchup-preview {
+    max-width: 900px;
+    margin: 3rem auto 2rem auto;
     background: white;
     padding: 1.5rem;
     border-radius: 1rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-.trainer-section h2 {
+.matchup-preview h3 {
+    text-align: center;
     color: #1e293b;
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
-.trainer-type-label {
-    color: #64748b;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.trainer-team-small {
+.matchup-grid {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
-.small-card {
-    background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
-    border-radius: 0.8rem;
-    padding: 0.5rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.small-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
-}
-
-/* Player Section */
-.player-section {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.player-section h2 {
-    color: #1e293b;
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-}
-
-.inventory-grid {
+.matchup-row {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
-    max-height: 500px;
-    overflow-y: auto;
-    padding: 0.5rem;
-}
-
-.selectable-card {
-    position: relative;
-    background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(145deg, #f9fafb, #f3f4f6);
     border-radius: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.matchup-card {
+    position: relative;
+    background: white;
+    border-radius: 0.6rem;
     padding: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 3px solid transparent;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-.selectable-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+.matchup-card.player-card {
+    border: 2px solid #3b82f6;
 }
 
-.selectable-card.selected {
-    border-color: #22c55e;
-    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
-    transform: scale(1.05);
+.matchup-card.trainer-card {
+    border: 2px solid #ef4444;
 }
 
-.selectable-card img {
+.matchup-card.empty {
+    background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+    border: 2px dashed #9ca3af;
+    opacity: 0.6;
+}
+
+.empty-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+}
+
+.empty-text {
+    color: #6b7280;
+    font-style: italic;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.matchup-card img {
     width: 100%;
+    max-width: 120px;
     height: auto;
-    border-radius: 0.5rem;
+    max-height: 140px;
+    object-fit: contain;
+    margin: 0 auto;
+    display: block;
 }
 
-.selectable-card .card-name {
+.matchup-name {
     font-weight: bold;
     color: #1e293b;
-    margin-top: 0.5rem;
     font-size: 0.9rem;
-    text-align: center;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
 }
 
-.selectable-card .card-hp {
-    color: #64748b;
-    font-size: 0.8rem;
-    text-align: center;
-}
-
-.selected-badge {
+.order-badge {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background-color: #22c55e;
-    color: white;
+    top: -0.5rem;
+    left: -0.5rem;
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
@@ -146,8 +120,188 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 1.2rem;
-    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.5);
+    font-size: 1.1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.order-badge.player {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.order-badge.trainer {
+    background-color: #ef4444;
+    color: white;
+}
+
+.vs-indicator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #64748b;
+    text-align: center;
+}
+
+.selection-hint {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    font-style: italic;
+}
+
+.setup-content {
+    max-width: 1400px;
+    margin: 0 auto 3rem auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+}
+
+/* Trainer Section - LEFT SIDE */
+.trainer-section {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 1rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.trainer-setup-profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 4px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin: 0 auto 1rem auto;
+    display: block;
+    background: white;
+}
+
+.trainer-section h2 {
+    color: #1e293b;
+    font-size: 1.5rem;
+    margin-bottom: 0.4rem;
+}
+
+.trainer-type-label {
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+.trainer-team-small {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.small-card {
+    position: relative;
+    background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+    border-radius: 0.6rem;
+    padding: 0.5rem;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.small-card .order-badge {
+    position: absolute;
+    top: -0.4rem;
+    left: -0.4rem;
+}
+
+.small-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.4rem;
+    max-height: 140px;
+    object-fit: contain;
+}
+
+/* Player Section */
+.player-section {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 1rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.player-section h2 {
+    color: #1e293b;
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.8rem;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 0.4rem;
+}
+
+.selectable-card {
+    position: relative;
+    background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+    border-radius: 0.6rem;
+    padding: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.selectable-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.18);
+}
+
+.selectable-card.selected {
+    border-color: #22c55e;
+    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+    transform: scale(1.03);
+}
+
+.selectable-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.4rem;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+.selectable-card .card-name {
+    font-weight: bold;
+    color: #1e293b;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.selectable-card .card-hp {
+    color: #64748b;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.selected-badge {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    background-color: #22c55e;
+    color: white;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.5);
 }
 
 /* Start Battle Section */
@@ -194,6 +348,48 @@
 .inventory-grid::-webkit-scrollbar-thumb {
     background: #94a3b8;
     border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .setup-content {
+        grid-template-columns: 1fr;
+    }
+
+    .matchup-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .vs-indicator {
+        transform: rotate(90deg);
+    }
+
+    .matchup-card img {
+        max-width: 100px;
+        max-height: 120px;
+    }
+}
+
+@media (max-width: 600px) {
+    .matchup-preview {
+        padding: 1rem;
+    }
+
+    .matchup-preview h3 {
+        font-size: 1.2rem;
+    }
+
+    .matchup-card img {
+        max-width: 80px;
+        max-height: 100px;
+    }
+
+    .order-badge {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.9rem;
+    }
 }
 
 .inventory-grid::-webkit-scrollbar-thumb:hover {

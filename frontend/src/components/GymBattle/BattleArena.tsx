@@ -56,7 +56,7 @@ const BattleArena: React.FC = () => {
         return (
             <div className="battle-arena-container">
                 <div className="loading-screen">
-                    <h1>⚔️ Battle Starting...</h1>
+                    <h1>Battle Starting...</h1>
                     <div className="loading-spinner"></div>
                 </div>
             </div>
@@ -101,7 +101,7 @@ const BattleArena: React.FC = () => {
                     </>
                 ) : (
                     <>
-                        <h1 className="result-title defeat-title">💔 DEFEAT 💔</h1>
+                        <h1 className="result-title defeat-title"> DEFEAT </h1>
                         <p className="result-message">{trainerName} was too strong!</p>
                         <p className="encouragement">Train harder and come back!</p>
                     </>

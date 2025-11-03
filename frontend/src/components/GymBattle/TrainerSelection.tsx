@@ -4,6 +4,9 @@ import type { GymTrainer } from "../../types/GymBattle";
 import type { Card } from "../../types/Card";
 import "./TrainerSelection.css";
 import { API_ENDPOINTS } from "../../config/apiConfig";
+import blaineImg from "../pictures/blaine.webp";
+import mistyImg from "../pictures/misty.png";
+import erikaImg from "../pictures/erika.png";
 
 const TrainerSelection: React.FC = () => {
     const [trainers, setTrainers] = useState<Record<string, GymTrainer>>({});
@@ -75,7 +78,16 @@ const TrainerSelection: React.FC = () => {
             Misty: "💧 Cascade Badge",
             Erika: "🌸 Rainbow Badge",
         };
-        return badges[name] || "🏆 Badge";
+        return badges[name] || "Badge";
+    };
+
+    const getTrainerImage = (name: string) => {
+        const images: Record<string, string> = {
+            Blaine: blaineImg,
+            Misty: mistyImg,
+            Erika: erikaImg,
+        };
+        return images[name];
     };
 
     if (loading) return <div className="gym-container"><p>Loading trainers...</p></div>;
@@ -98,6 +110,13 @@ const TrainerSelection: React.FC = () => {
                                 style={{ background: getTrainerColor(trainer.type) }}
                                 onClick={() => handleSelectTrainer(trainer)}
                             >
+                                {getTrainerImage(trainer.name) && (
+                                    <img
+                                        src={getTrainerImage(trainer.name)}
+                                        alt={trainer.name}
+                                        className="trainer-profile-pic"
+                                    />
+                                )}
                                 <h2>{trainer.name}</h2>
                                 <p className="trainer-type">{trainer.type} Type Trainer</p>
                                 <p className="trainer-badge">{getTrainerBadge(trainer.name)}</p>
@@ -108,6 +127,13 @@ const TrainerSelection: React.FC = () => {
                 </>
             ) : (
                 <div className="trainer-detail">
+                    {getTrainerImage(selectedTrainer.name) && (
+                        <img
+                            src={getTrainerImage(selectedTrainer.name)}
+                            alt={selectedTrainer.name}
+                            className="trainer-detail-profile-pic"
+                        />
+                    )}
                     <h1>Gym Leader: {selectedTrainer.name}</h1>
                     <p className="detail-type">{selectedTrainer.type} Type Specialist</p>
                     <p className="detail-badge">Win to earn: {getTrainerBadge(selectedTrainer.name)}</p>

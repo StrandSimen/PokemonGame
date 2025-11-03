@@ -19,5 +19,9 @@ export const API_ENDPOINTS = {
     GYM_TRAINER_BY_NAME: (trainerName: string) =>
         `${API_BASE_URL}/api/gym/trainers/${trainerName}`,
     GYM_BATTLE: `${API_BASE_URL}/api/gym/battle`,
+    GYM_BADGES: (username: string) =>
+        `${API_BASE_URL}/api/gym/badges/${username}`,
+    GYM_BADGE_PROGRESS: (username: string) =>
+        `${API_BASE_URL}/api/gym/badges/${username}/progress`,
 };
 

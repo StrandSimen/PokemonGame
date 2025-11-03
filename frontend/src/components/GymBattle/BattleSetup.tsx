@@ -4,6 +4,9 @@ import type { GymTrainer } from "../../types/GymBattle";
 import type { Card } from "../../types/Card";
 import "./BattleSetup.css";
 import { API_ENDPOINTS } from "../../config/apiConfig";
+import blaineImg from "../pictures/blaine.webp";
+import mistyImg from "../pictures/misty.png";
+import erikaImg from "../pictures/erika.png";
 
 const BattleSetup: React.FC = () => {
     const { trainerName } = useParams<{ trainerName: string }>();
@@ -60,10 +63,32 @@ const BattleSetup: React.FC = () => {
 
     const handleSelectPokemon = (pokedexNumber: number) => {
         if (selectedPokemon.includes(pokedexNumber)) {
+            // Remove from selection
             setSelectedPokemon(selectedPokemon.filter((id) => id !== pokedexNumber));
         } else if (selectedPokemon.length < 3) {
+            // Add to selection (maintains order)
             setSelectedPokemon([...selectedPokemon, pokedexNumber]);
         }
+    };
+
+    const getOrderNumber = (pokedexNumber: number): number | null => {
+        const index = selectedPokemon.indexOf(pokedexNumber);
+        return index >= 0 ? index + 1 : null;
+    };
+
+    const getSelectedCards = (): Card[] => {
+        return selectedPokemon.map(id =>
+            inventory.find(card => card.pokedexNumber === id)
+        ).filter(card => card !== undefined) as Card[];
+    };
+
+    const getTrainerImage = (name: string) => {
+        const images: Record<string, string> = {
+            Blaine: blaineImg,
+            Misty: mistyImg,
+            Erika: erikaImg,
+        };
+        return images[name];
     };
 
     const handleStartBattle = () => {
@@ -87,26 +112,37 @@ const BattleSetup: React.FC = () => {
             <h1>Battle Setup</h1>
             <p className="setup-subtitle">Select 3 Pokemon to battle against {trainer.name}</p>
 
+
             <div className="setup-content">
-                {/* Trainer Section */}
+                {/* Trainer Section - LEFT SIDE */}
                 <div className="trainer-section">
+                    {getTrainerImage(trainer.name) && (
+                        <img
+                            src={getTrainerImage(trainer.name)}
+                            alt={trainer.name}
+                            className="trainer-setup-profile-pic"
+                        />
+                    )}
                     <h2>Opponent: {trainer.name}</h2>
                     <p className="trainer-type-label">{trainer.type} Type</p>
                     <div className="trainer-team-small">
-                        {trainerCards.map((card) => (
+                        {trainerCards.map((card, index) => (
                             <div key={card.pokedexNumber} className="small-card">
+                                <div className="order-badge trainer">{index + 1}</div>
                                 <img src={card.imageUrl} alt={card.name} />
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Player Selection Section */}
+                {/* Player Selection Section - RIGHT SIDE */}
                 <div className="player-section">
                     <h2>Your Team ({selectedPokemon.length}/3 selected)</h2>
+                    <p className="selection-hint">Click to select in battle order (1st, 2nd, 3rd)</p>
                     <div className="inventory-grid">
                         {inventory.map((card) => {
                             const isSelected = selectedPokemon.includes(card.pokedexNumber);
+                            const orderNumber = getOrderNumber(card.pokedexNumber);
                             return (
                                 <div
                                     key={card.pokedexNumber}
@@ -116,11 +152,51 @@ const BattleSetup: React.FC = () => {
                                     <img src={card.imageUrl} alt={card.name} />
                                     <p className="card-name">{card.name}</p>
                                     <p className="card-hp">HP: {card.hp}</p>
-                                    {isSelected && <div className="selected-badge">✓</div>}
+                                    {isSelected && orderNumber && (
+                                        <div className="selected-badge order-badge">{orderNumber}</div>
+                                    )}
                                 </div>
                             );
                         })}
                     </div>
+                </div>
+            </div>
+
+            {/* Battle Matchup Preview - Always Visible */}
+            <div className="matchup-preview">
+                <h3>Battle Order Preview</h3>
+                <div className="matchup-grid">
+                    {[0, 1, 2].map((index) => {
+                        const selectedCards = getSelectedCards();
+                        const playerCard = selectedCards[index];
+                        const trainerCard = trainerCards[index];
+
+                        return (
+                            <div key={index} className="matchup-row">
+                                {/* Trainer on LEFT */}
+                                <div className="matchup-card trainer-card">
+                                    <div className="order-badge trainer">{index + 1}</div>
+                                    <img src={trainerCard.imageUrl} alt={trainerCard.name} />
+                                    <p className="matchup-name">{trainerCard.name}</p>
+                                </div>
+                                <div className="vs-indicator">VS</div>
+                                {/* Player on RIGHT */}
+                                <div className={`matchup-card player-card ${!playerCard ? 'empty' : ''}`}>
+                                    <div className="order-badge player">{index + 1}</div>
+                                    {playerCard ? (
+                                        <>
+                                            <img src={playerCard.imageUrl} alt={playerCard.name} />
+                                            <p className="matchup-name">{playerCard.name}</p>
+                                        </>
+                                    ) : (
+                                        <div className="empty-slot">
+                                            <p className="empty-text">Select Pokemon #{index + 1}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 
@@ -130,7 +206,7 @@ const BattleSetup: React.FC = () => {
                     onClick={handleStartBattle}
                     disabled={selectedPokemon.length !== 3}
                 >
-                    {selectedPokemon.length === 3 ? "Start Battle! ⚔️" : `Select ${3 - selectedPokemon.length} more Pokemon`}
+                    {selectedPokemon.length === 3 ? "Start Battle!" : `Select ${3 - selectedPokemon.length} more Pokemon`}
                 </button>
             </div>
         </div>
