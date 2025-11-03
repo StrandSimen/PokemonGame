@@ -1,16 +1,16 @@
 .inventory-container {
     min-height: 100vh;
-    background: linear-gradient(to bottom, #f0f4ff, #e0f7ff);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
     padding: 2rem;
 }
 
 .back-button {
-    background: linear-gradient(145deg, #3b82f6, #2563eb);
+    background: var(--btn-primary);
     color: white;
     font-weight: bold;
     font-size: 1rem;
     padding: 0.75rem 1.5rem;
-    border: 2px solid #1d4ed8;
+    border: 2px solid var(--accent-primary);
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -20,7 +20,7 @@
 .back-button:hover {
     background: linear-gradient(145deg, #2563eb, #1d4ed8);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
 }
 
 .inventory-content {
@@ -31,16 +31,19 @@
 .inventory-title {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #1f2937;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     text-align: center;
     margin-bottom: 0.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.2));
 }
 
 .inventory-count {
     text-align: center;
     font-size: 1.2rem;
-    color: #4b5563;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
 }
 
@@ -49,20 +52,21 @@
     text-align: center;
     font-size: 1.5rem;
     padding: 3rem;
-    color: #4b5563;
+    color: var(--text-primary);
 }
 
 .empty-inventory {
     text-align: center;
     padding: 4rem 2rem;
-    background: white;
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-tertiary));
+    border: 2px solid var(--border-color-light);
     border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
 }
 
 .empty-inventory p {
     font-size: 1.3rem;
-    color: #6b7280;
+    color: var(--text-secondary);
     margin: 0.5rem 0;
 }
 
@@ -112,12 +116,13 @@
 }
 
 .inventory-card {
-    background: white;
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-tertiary));
+    border: 2px solid var(--border-color);
     border-radius: 1rem;
     padding: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -126,8 +131,8 @@
 
 .inventory-card:hover {
     transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-    border: 2px solid #3b82f6;
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border: 2px solid var(--accent-primary);
 }
 
 .inventory-card img {
@@ -139,7 +144,7 @@
 
 .card-name {
     font-weight: bold;
-    color: #1f2937;
+    color: var(--text-primary);
     text-align: center;
     font-size: 0.9rem;
 }
@@ -151,7 +156,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--overlay-dark);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -160,14 +165,15 @@
 }
 
 .card-modal {
-    background: white;
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-tertiary));
+    border: 2px solid var(--border-color-light);
     border-radius: 1.5rem;
     max-width: 800px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
     animation: modalSlideIn 0.3s ease;
 }
 
@@ -229,45 +235,47 @@
 
 .modal-card-info h2 {
     font-size: 2rem;
-    color: #1f2937;
+    color: var(--accent-primary);
     margin: 0;
     margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .card-detail {
     font-size: 1.1rem;
-    color: #4b5563;
+    color: var(--text-secondary);
     margin: 0.5rem 0;
 }
 
 .card-detail strong {
-    color: #1f2937;
+    color: var(--text-primary);
 }
 
 .card-count-info {
     font-size: 1rem;
-    color: #6b7280;
+    color: var(--text-muted);
     font-style: italic;
     margin: 1rem 0;
 }
 
 .sell-button-modal {
-    background: linear-gradient(145deg, #10b981, #059669);
+    background: var(--btn-success);
     color: white;
     font-weight: bold;
     font-size: 1.2rem;
     padding: 1rem 2rem;
-    border: 3px solid #047857;
+    border: 3px solid var(--accent-grass);
     border-radius: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: auto;
+    box-shadow: var(--shadow-md);
 }
 
 .sell-button-modal:hover {
     background: linear-gradient(145deg, #059669, #047857);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4), var(--shadow-glow);
 }
 
 .sell-button-modal:active {

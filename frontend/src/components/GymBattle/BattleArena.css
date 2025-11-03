@@ -4,19 +4,20 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: linear-gradient(135deg, #1e293b, #334155);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
     font-family: "Poppins", sans-serif;
 }
 
 /* Loading Screen */
 .loading-screen {
     text-align: center;
-    color: white;
+    color: var(--text-primary);
 }
 
 .loading-screen h1 {
     font-size: 3rem;
     margin-bottom: 2rem;
+    color: var(--accent-primary);
     animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -41,14 +42,17 @@
 
 /* Error Screen */
 .error-screen {
-    background: white;
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-tertiary));
+    border: 2px solid var(--border-color-light);
     padding: 3rem;
     border-radius: 1.5rem;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
 }
 
 .error-screen h1 {
+    color: #ef4444;
+}
     color: #ef4444;
     font-size: 2.5rem;
     margin-bottom: 1rem;

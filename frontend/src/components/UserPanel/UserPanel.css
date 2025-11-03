@@ -9,25 +9,30 @@
     height: auto;
     min-height: 22em;
     padding: 1.5rem 1rem;
-    background: linear-gradient(145deg, #f87171, #fb923c);
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-tertiary));
+    border: 2px solid var(--border-color-light);
     border-radius: 1.2rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-lg);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .user-panel h2 {
     font-size: 1.5rem;
     margin: 0.5rem 0;
+    color: var(--accent-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .user-panel h3 {
     font-size: 1.1rem;
     margin: 0.8rem 0 0.5rem 0;
+    color: var(--text-secondary);
 }
 
 .user-panel p {
     font-size: 1rem;
     margin: 0.3rem 0;
+    color: var(--text-secondary);
 }
 
 .card-grid {
@@ -67,22 +72,24 @@
 }
 
 .open-button {
-    background-color: #3b82f6;
+    background: var(--btn-primary);
     color: white;
     font-weight: bold;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
-    border: none;
+    border: 2px solid var(--accent-primary);
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.25s ease, transform 0.15s ease;
-    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
 }
 
 .open-button:hover {
-    background-color: #2563eb;
+    background: linear-gradient(145deg, #2563eb, #1d4ed8);
     transform: scale(1.05);
-    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.5);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border-color: var(--accent-secondary);
 }
 
 /* Responsive adjustments */
