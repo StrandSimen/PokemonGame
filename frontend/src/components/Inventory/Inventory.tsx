@@ -12,8 +12,12 @@ interface CardWithCount extends Card {
 const Inventory: React.FC = () => {
     const [inventory, setInventory] = useState<CardWithCount[]>([]);
     const [loading, setLoading] = useState(true);
+    const [initialLoad, setInitialLoad] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedCard, setSelectedCard] = useState<CardWithCount | null>(null);
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const [sellingCardId, setSellingCardId] = useState<number | null>(null);
+    const [showCoinAnimation, setShowCoinAnimation] = useState(false);
     const navigate = useNavigate();
 
     const fetchInventory = async () => {
@@ -38,6 +42,7 @@ const Inventory: React.FC = () => {
             setError((err as Error).message);
         } finally {
             setLoading(false);
+            setInitialLoad(false);
         }
     };
 
@@ -55,6 +60,12 @@ const Inventory: React.FC = () => {
 
     const handleSellCard = async (cardId: number) => {
         try {
+            // Start selling animation
+            setSellingCardId(cardId);
+
+            // Trigger coin animation
+            setShowCoinAnimation(true);
+
             const res = await fetch(API_ENDPOINTS.USER_SELL(cardId, 20), {
                 method: "POST",
             });
@@ -62,16 +73,37 @@ const Inventory: React.FC = () => {
 
             console.log(`Sold card ${cardId} for 20 coins`);
 
-            // Close modal and refresh inventory
-            setSelectedCard(null);
-            await fetchInventory();
+            // Show success toast
+            setToastMessage("Card sold! +20 coins 💰");
+
+            // Wait for animation to complete before closing modal
+            setTimeout(() => {
+                setSelectedCard(null);
+                setSellingCardId(null);
+                setShowCoinAnimation(false);
+            }, 800);
+
+            // Refresh inventory after animation
+            setTimeout(async () => {
+                await fetchInventory();
+            }, 900);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                setToastMessage(null);
+            }, 3000);
         } catch (err) {
             console.error(err);
-            alert("Failed to sell card");
+            setToastMessage("Failed to sell card ❌");
+            setSellingCardId(null);
+            setShowCoinAnimation(false);
+            setTimeout(() => {
+                setToastMessage(null);
+            }, 3000);
         }
     };
 
-    if (loading) return <div className="inventory-loading">Loading inventory...</div>;
+    if (loading && initialLoad) return <div className="inventory-loading">Loading inventory...</div>;
     if (error) return <div className="inventory-error">Error: {error}</div>;
 
     // Create array with duplicates for display
@@ -117,8 +149,16 @@ const Inventory: React.FC = () => {
             {/* Modal for selected card */}
             {selectedCard && (
                 <div className="card-modal-overlay" onClick={handleCloseModal}>
-                    <div className="card-modal" onClick={(e) => e.stopPropagation()}>
+                    <div className={`card-modal ${sellingCardId === selectedCard.pokedexNumber ? 'selling' : ''}`} onClick={(e) => e.stopPropagation()}>
                         <button className="close-modal" onClick={handleCloseModal}>×</button>
+
+                        {/* Coin animation */}
+                        {showCoinAnimation && (
+                            <div className="coin-animation">
+                                <span className="flying-coin">💰</span>
+                            </div>
+                        )}
+
                         <div className="modal-content">
                             <img src={selectedCard.imageUrl} alt={selectedCard.name} className="modal-card-image" />
                             <div className="modal-card-info">
@@ -130,12 +170,20 @@ const Inventory: React.FC = () => {
                                 <button
                                     className="sell-button-modal"
                                     onClick={() => handleSellCard(selectedCard.pokedexNumber)}
+                                    disabled={sellingCardId !== null}
                                 >
-                                    Sell for 20 coins
+                                    {sellingCardId === selectedCard.pokedexNumber ? 'Selling...' : 'Sell for 20 coins'}
                                 </button>
                             </div>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {toastMessage && (
+                <div className="toast-notification">
+                    {toastMessage}
                 </div>
             )}
         </div>
