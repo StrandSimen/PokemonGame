@@ -69,17 +69,47 @@ The project implements a modern microservices architecture with:
 
 Docker automatically builds all services using the Maven wrapper, so you do not need to install Maven or run mvn clean install manually.
 
-Run the command below when starting the project for the first time
+Run the command below when starting the project for the first time and when you want to start it again.
+
 **Multi-instance deployment (scaled):**
 ```cmd
 docker-compose up --build --scale booster-pack=3 --scale user=2 --scale autoplayers=2
 ```
-
+**To stop the project:**
+```cmd
+docker-compose down  
+```
+**To stop and start without rebuild**
+```cmd
+docker-compose stop
+docker-compose start
+```
 **Standard deployment (single instance):**
 ```cmd
 docker-compose up --build
 ```
+## Testing links:
 
+**Frontend**: http://localhost:5173/ This is where you start the game.
+
+**Consul UI** (Service Discovery): http://localhost:8500 This is where you can see all services and their health status.
+
+**RabbitMQ Management**: http://localhost:15672 (guest/guest) This is where you can see all messages and queues.
+
+After opening a BoosterPack, it will be available at:
+
+**User Inventory**: http://localhost:8100/api/defaultUser/inventory This is where you can see all cards in your inventory.
+
+After adding a Coin to the inventory, it will be available at:
+
+**User Coins**: http://localhost:8100/api/defaultUser/coins This is where you can see all coins in your account.
+
+To view all cards in the database, go to:
+
+**Cards**: http://localhost:8100/api/cards This is where you can see all cards in the database.
+
+## Monitoring
+- **Service Health**: http://localhost:8100/actuator/health - Gateway health endpoint
 
 ### Manuel build (optional)
 
@@ -113,132 +143,133 @@ This project uses a microservices architecture with:
 │                              Docker Compose Environment                          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
-                              ┌──────────────────┐
-                              │   Frontend       │
-                              │   (React)        │
-                              │   Port: 5173     │
-                              └────────┬─────────┘
-                                       │
-                                       │ HTTP/REST (Synchronous)
-                                       │
-                                       ▼
-                    ┌─────────────────────────────────────┐
-                    │   Spring Cloud Gateway              │
-                    │   Port: 8100                        │
-                    │   (API Gateway + Load Balancing)    │
-                    └──────┬────────────────────┬─────────┘
-                           │                    │
-          HTTP/REST        │                    │ Service Discovery
-          (Synchronous)    │                    │ (Synchronous)
-                           │                    │
-                           ▼                    ▼
-        ┌──────────────────────────┐   ┌─────────────────────┐
-        │                          │   │     Consul          │
-        │   Microservices Layer    │   │     Port: 8500      │
-        │                          │   │  (Service Registry  │
-        └──────────────────────────┘   │   & Health Check)   │
-                                       └──────────┬──────────┘
-                                                  │
-                                                  │ Registration & 
-                                                  │ Health Checks
-                                                  │ (Synchronous)
-        ┌─────────────────────────────────────────┼─────────────────────────┐
-        │                                         │                         │
-        │                                         │                         │
-        ▼                                         ▼                         ▼
-┌───────────────┐                      ┌──────────────────┐     ┌──────────────────┐
-│ BoosterPack   │                      │  User Service    │     │  Autoplayers     │
-│ Service(s)    │                      │  Port: 8081      │     │  Service(s)      │
-│ Port: 8082    │                      │  (Scalable: x2)  │     │  Port: 8083      │
-│(Scalable: x3) │                      │                  │     │  (Scalable: x2)  │
-└───────┬───────┘                      └────────┬─────────┘     └────────┬─────────┘
-        │                                       │                        │
-        │                                       │                        │
-        │  Async Message                        │ Consume                │
-        │  Publishing                           │ Messages               │ Consume
-        │  (Asynchronous)                       │ (Asynchronous)         │ Messages
-        │                                       │                        │ (Asynchronous)
-        │         ┌─────────────────────────────┴────────────────────────┘
-        │         │
-        └────────►│
-                  │
-           ┌──────▼──────────┐
-           │   RabbitMQ      │
-           │   Port: 5672    │
-           │   (Web: 15672)  │
-           │   Message Broker│
-           └─────────────────┘
+                                 ┌──────────────────┐
+                                 │   Frontend       │
+                                 │   (React + Vite) │
+                                 │   Port: 5173     │
+                                 └────────┬─────────┘
+                                          │
+                                          │ [SYNC] HTTP/REST
+                                          ▼
+                         ┌────────────────────────────────┐
+                         │  Spring Cloud Gateway          │
+                         │  Port: 8100                    │
+                         │  • Load Balancing              │
+                         │  • API Routing                 │
+                         └─────────┬──────────────────────┘
+                                   │
+                                   │ [SYNC] Service Discovery
+                                   ▼
+                         ┌─────────────────────┐
+                         │     Consul          │
+                         │   Port: 8500        │
+                         │  • Service Registry │
+                         │  • Health Checks    │
+                         └──────────┬──────────┘
+                                    │
+                                    │ [SYNC] Registration
+              ┌─────────────────────┼─────────────────────┐
+              │                     │                     │
+              ▼                     ▼                     ▼
+    ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+    │  BoosterPack     │  │  User Service    │  │  Autoplayers     │
+    │  Service(s)      │  │  Port: 8081      │  │  Service(s)      │
+    │  Port: 8082      │  │  (Scalable x2)   │  │  Port: 8083      │
+    │  (Scalable x3)   │  │                  │  │  (Scalable x2)   │
+    └────────┬─────────┘  └────────┬─────────┘  └────────┬─────────┘
+             │                     ▲                     │
+             │ [SYNC]              │                     │
+             │ via Gateway         │                     │
+             └────────► spendCoins │                     │
+                                   │                     │
+             │                     │                     │
+             │ [ASYNC]             │ [ASYNC]             │ [ASYNC]
+             │ Publish             │ Consume             │ Publish
+             │                     │                     │
+             └──────────┐          │          ┌──────────┘
+                        │          │          │
+                        ▼          ▼          ▼
+              ┌───────────────────────────────────────┐
+              │          RabbitMQ Broker              │
+              │          Port: 5672 (AMQP)            │
+              │          Port: 15672 (Management UI)  │
+              │      [ASYNCHRONOUS MESSAGING]         │
+              │                                       │
+              │  ┌─────────────────────────────────┐ │
+              │  │  Queue: "booster.queue"         │ │
+              │  │  • Created by: BoosterPack      │ │
+              │  │  • Published by: BoosterPack    │ │
+              │  │  • Consumed by: User            │ │
+              │  │  • Message: Card list from pack │ │
+              │  └─────────────────────────────────┘ │
+              │                                       │
+              │  ┌─────────────────────────────────┐ │
+              │  │  Queue: "gym.queue"             │ │
+              │  │  • Created by: Autoplayers      │ │
+              │  │  • Published by: Autoplayers    │ │
+              │  │  • Consumed by: User            │ │
+              │  │  • Message: Battle rewards      │ │
+              │  └─────────────────────────────────┘ │
+              └───────────────────────────────────────┘
+
+                 ┌──────────────────────────────────┐
+                 │      PostgreSQL Database          │
+                 │      Port: 5432                   │
+                 │   [SYNCHRONOUS - JDBC/JPA]        │
+                 │                                   │
+                 │  Accessed by all microservices    │
+                 │  (BoosterPack, User, Autoplayers) │
+                 └───────────────────────────────────┘
 
 
-        ┌──────────────┬─────────────────┬──────────────────┐
-        │              │                 │                  │
-        │ JDBC         │ JDBC            │ JDBC             │
-        │ (Sync)       │ (Sync)          │ (Sync)           │
-        │              │                 │                  │
-        ▼              ▼                 ▼                  ▼
-     ┌──────────────────────────────────────────────────────────┐
-     │              PostgreSQL Database                          │
-     │              Port: 5432                                   │
-     │         (Shared by all microservices)                     │
-     └──────────────────────────────────────────────────────────┘
+Information:
+  [SYNC]  = Synchronous communication (request/response - waits for answer)
+  [ASYNC] = Asynchronous communication (fire and forget - no waiting)
+
+Inter-Service Communication:
+  • BoosterPack → User (via Gateway): Synchronous call to spend coins before opening pack
+  • All other inter-service communication happens through RabbitMQ (asynchronous)
 
 
-═══════════════════════════════════════════════════════════════════════════
-Communication Types:
-═══════════════════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════════
+Communication Flow:
+═══════════════════════════════════════════════════════════════════════════════
 
-SYNCHRONOUS (Request-Response):
-  • Frontend ↔ Gateway                  : HTTP/REST
-  • Gateway ↔ BoosterPack Service       : HTTP/REST (Load Balanced)
-  • Gateway ↔ User Service              : HTTP/REST (Load Balanced)
-  • Gateway ↔ Autoplayers Service       : HTTP/REST (Load Balanced)
-  • All Services ↔ Consul               : Service Registration & Discovery
-  • All Services ↔ PostgreSQL           : JDBC Database Connections
+SYNCHRONOUS (HTTP/REST - Request/Response):
+  ✓ Frontend → Gateway → Microservices (all user actions)
+  ✓ BoosterPack → Gateway → User Service (spendCoins endpoint)
+     • When opening a booster pack, BoosterPack calls User service to deduct 20 coins
+     • Uses RestTemplate with gateway URL: http://gateway:8100/api/defaultUser/spendCoins
+     • Waits for response to confirm coins were deducted before generating cards
+  ✓ All services register with Consul for service discovery
+  ✓ Gateway uses Consul to find and load balance between service instances
 
-ASYNCHRONOUS (Event-Driven):
-  • BoosterPack → RabbitMQ → User       : Booster pack opened events
-  • BoosterPack → RabbitMQ → Autoplayers: Game events/notifications
-  • User → RabbitMQ → Autoplayers       : User action events
+ASYNCHRONOUS (RabbitMQ - Event-Driven):
+  ✓ booster.queue:  BoosterPack publishes → User consumes (add cards to inventory)
+  ✓ gym.queue:      Autoplayers publishes → User consumes (battle rewards/coins)
 
-═══════════════════════════════════════════════════════════════════════════
+DATABASE (PostgreSQL):
+  ✓ Shared database accessed by all microservices for persistent storage
+  ✓ Stores: Users, Cards, Inventory, Coins, Gym Trainers, Battle History
+
+═══════════════════════════════════════════════════════════════════════════════
 Service Responsibilities:
-═══════════════════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════════
 
-• Frontend:          User interface for opening booster packs and viewing inventory
-• Gateway:           Single entry point, load balancing, routing to microservices
+• Frontend:          React UI for opening packs, viewing inventory, and battling trainers
+• Gateway:           API Gateway - single entry point with load balancing and routing
 • Consul:            Service discovery, health monitoring, dynamic service registry
-• BoosterPack:       Opens booster packs, deducts coins, publishes events to RabbitMQ
-• User:              Manages user inventory, coins, and card collection
-• Autoplayers:       Automated game players/bots (consumes game events)
-• RabbitMQ:          Message broker for asynchronous event-driven communication
-• PostgreSQL:        Persistent data storage for all microservices
+• BoosterPack:       Opens booster packs, deducts coins, publishes card lists to RabbitMQ
+• User:              Manages inventory, coins, consumes booster and gym reward events
+• Autoplayers:       Gym battle system, AI trainers, publishes battle rewards to RabbitMQ
+• RabbitMQ:          Message broker for asynchronous communication between services
+• PostgreSQL:        Persistent data storage shared by all microservices
 
-═══════════════════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════════
 ```
 
 
-## Testing links:
 
-**Frontend**: http://localhost:5173/
-
-**Consul UI** (Service Discovery): http://localhost:8500 
-
-**RabbitMQ Management**: http://localhost:15672 (guest/guest)
-
-After opening a BoosterPack, it will be available at:
-
-**User Inventory**: http://localhost:8100/api/defaultUser/inventory
-
-After adding a Coin to the inventory, it will be available at:
-
-**User Coins**: http://localhost:8100/api/defaultUser/coins
-
-To view all cards in the database, go to:
-
-**Cards**: http://localhost:8100/api/cards 
-
-## Monitoring
-- **Service Health**: http://localhost:8100/actuator/health - Gateway health endpoint
 
 ## Contributions and responsibilities 
 In this project, Simen and Halvor worked together. We started by agreeing on what to build and how it should look. As we began coding, tasks were divided so we could work in our own branches in GitHub and push to main when ready. We also used a Google document to keep track of who was doing what at any time. Both worked on setting up the structure, and eventually Simen took more responsibility for the game logic and frontend. Halvor then focused on setting up the Gateway, Consul, Rabbit, and tests.
