@@ -4,6 +4,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.core.ParameterizedTypeReference;
+import jakarta.annotation.PostConstruct;
 import simen.order.autoplayers.dto.BattleRequest;
 import simen.order.autoplayers.dto.BattleResult;
 import simen.order.autoplayers.model.Card;
@@ -58,11 +60,25 @@ public class GymBattleService {
         BADGE_MAP.put("Erika", "Rainbow Badge");
     }
 
+    @PostConstruct
+    public void clearAllBattlesOnStartup() {
+        try {
+            gymBattleRepository.deleteAll();
+            System.out.println("=== All gym battles cleared on startup ===");
+            System.out.println("Badges have been reset - players start fresh!");
+        } catch (Exception e) {
+            System.err.println("Failed to clear gym battles on startup: " + e.getMessage());
+        }
+    }
+
     public BattleResult startBattle(BattleRequest request) {
         // Validate request
         if (request.getPlayerTeam() == null || request.getPlayerTeam().size() != 3) {
             throw new RuntimeException("Player must select exactly 3 Pokemon");
         }
+
+        // Validate Pokemon ownership via synchronous REST call to user service
+        validatePokemonOwnership(request.getUsername(), request.getPlayerTeam());
 
         // Get trainer
         GymTrainer trainer = gymTrainerService.getTrainer(request.getTrainerName());
@@ -193,9 +209,9 @@ public class GymBattleService {
         log.append("Player's Pokemon fainted: ").append(playerPokemonFainted).append("/3\n");
         log.append("Trainer's Pokemon fainted: ").append(trainerPokemonFainted).append("/3\n\n");
         if (playerWon) {
-            log.append("🎉 YOU WON! Congratulations!\n");
+            log.append("YOU WON! Congratulations!\n");
         } else {
-            log.append("💔 YOU LOST! Better luck next time!\n");
+            log.append("YOU LOST! Better luck next time!\n");
         }
 
         return playerWon;
@@ -233,6 +249,43 @@ public class GymBattleService {
             System.out.println("Sent coin reward message: " + message);
         } catch (Exception e) {
             System.err.println("Failed to send coin reward message: " + e.getMessage());
+        }
+    }
+
+    //Validates that the player owns all Pokemon in their team via synchronous REST call to user service.
+    private void validatePokemonOwnership(String username, List<Integer> pokemonTeam) {
+        try {
+            System.out.println("=== SYNCHRONOUS REST CALL: Validating Pokemon ownership ===");
+            System.out.println("Making synchronous REST call to user service...");
+            System.out.println("URL: GET http://user/api/" + username + "/inventory");
+
+            // Make synchronous REST call to user service to get player's inventory
+            Map<Integer, Integer> inventory = webClientBuilder.build()
+                    .get()
+                    .uri("http://user/api/" + username + "/inventory")
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<Integer, Integer>>() {})
+                    .block(); // Synchronous blocking call
+
+            System.out.println("Response received from user service!");
+
+            if (inventory == null || inventory.isEmpty()) {
+                throw new RuntimeException("Player has no Pokemon in inventory");
+            }
+
+            // Check if player owns each Pokemon in their team
+            for (Integer pokedexNumber : pokemonTeam) {
+                if (!inventory.containsKey(pokedexNumber) || inventory.get(pokedexNumber) < 1) {
+                    throw new RuntimeException("Player does not own Pokemon with Pokedex number: " + pokedexNumber);
+                }
+            }
+
+            String pokemonList = pokemonTeam.toString().replaceAll("[\\[\\]]", "");
+            System.out.println("SUCCESS: Pokemon " + pokemonList + " er validert for bruker: " + username);
+            System.out.println("=== Pokemon ownership validation complete ===");
+        } catch (Exception e) {
+            System.err.println("FAILED: Pokemon ownership validation failed - " + e.getMessage());
+            throw new RuntimeException("Failed to validate Pokemon ownership: " + e.getMessage());
         }
     }
 
