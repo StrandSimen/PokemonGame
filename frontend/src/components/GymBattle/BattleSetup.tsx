@@ -66,7 +66,7 @@ const BattleSetup: React.FC = () => {
             // Remove from selection
             setSelectedPokemon(selectedPokemon.filter((id) => id !== pokedexNumber));
         } else if (selectedPokemon.length < 3) {
-            // Add to selection (maintains order)
+            // Add to selection
             setSelectedPokemon([...selectedPokemon, pokedexNumber]);
         }
     };

@@ -9,7 +9,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue boosterQueue() {
-        return new Queue("booster.queue", false); // Non-durable queue
+        return new Queue("booster.queue", false);
     }
 }
 

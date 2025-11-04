@@ -1,4 +1,4 @@
-/* Global CSS Variables for Dark Pokemon Theme */
+
 :root {
     /* Dark Background Colors */
     --bg-primary: #1a1d29;
@@ -6,7 +6,7 @@
     --bg-tertiary: #2d3142;
     --bg-card: #1f2937;
 
-    /* Accent Colors - Pokemon themed */
+    /* Accent Colors */
     --accent-primary: #fbbf24;
     --accent-secondary: #f59e0b;
     --accent-fire: #ff6b35;

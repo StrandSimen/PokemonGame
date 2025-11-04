@@ -20,7 +20,7 @@ The project implements a modern microservices architecture with:
 
 **Opening Booster Packs:**
 - Each booster pack costs 20 coins
-- Contains 10 random Pokemon cards
+- Contains 11 random Pokemon cards
 - Cards are automatically added to your inventory via RabbitMQ messaging
 - You need enough coins to open a pack, or you'll get an error
 
@@ -67,7 +67,7 @@ The project implements a modern microservices architecture with:
 
 ### Start with Docker Compose:
 
-Docker automatically builds all services using the Maven wrapper, so you do not need to install Maven or run mvn clean install manually.
+Docker automatically builds all services using the Maven wrapper, so you do **not** need to install Maven or run mvn clean install manually.
 
 Run the command below when starting the project for the first time and when you want to start it again.
 
@@ -88,6 +88,10 @@ docker-compose start
 ```cmd
 docker-compose up --build
 ```
+**Tips**
+The project uses a few minutes to start up completly and show all the service in consul. 
+If something goes wrong, like one service doesn't start, you can try to start it manually in docker desktop. 
+
 ## Testing links:
 
 **Frontend**: http://localhost:5173/ This is where you start the game.
@@ -178,10 +182,10 @@ This project uses a microservices architecture with:
     │  (Scalable x3)   │  │                  │  │  (Scalable x2)   │
     └────────┬─────────┘  └────────┬─────────┘  └────────┬─────────┘
              │                     ▲                     │
-             │ [SYNC]              │                     │
-             │ via Gateway         │                     │
-             └────────► spendCoins │                     │
-                                   │                     │
+             │ [SYNC]              │ [SYNC]              │
+             │ via Gateway         │ via Load Balancer   │
+             └────────► spendCoins │ ◄───────────────────┘
+                                   │    validateOwnership
              │                     │                     │
              │ [ASYNC]             │ [ASYNC]             │ [ASYNC]
              │ Publish             │ Consume             │ Publish
@@ -228,6 +232,7 @@ Information:
 
 Inter-Service Communication:
   • BoosterPack → User (via Gateway): Synchronous call to spend coins before opening pack
+  • Autoplayers → User (via Load Balancer): Synchronous call to validate Pokemon ownership before battle
   • All other inter-service communication happens through RabbitMQ (asynchronous)
 
 
@@ -241,6 +246,11 @@ SYNCHRONOUS (HTTP/REST - Request/Response):
      • When opening a booster pack, BoosterPack calls User service to deduct 20 coins
      • Uses RestTemplate with gateway URL: http://gateway:8100/api/defaultUser/spendCoins
      • Waits for response to confirm coins were deducted before generating cards
+  ✓ Autoplayers → User Service (inventory endpoint via Load Balancer)
+     • When starting a gym battle, Autoplayers calls User service to validate Pokemon ownership
+     • Uses WebClient with service URL: http://user/api/{username}/inventory
+     • Waits for response to confirm player owns all 3 Pokemon before starting battle
+     • Load balanced across multiple User service instances via Consul discovery
   ✓ All services register with Consul for service discovery
   ✓ Gateway uses Consul to find and load balance between service instances
 

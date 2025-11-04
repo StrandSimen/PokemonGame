@@ -72,7 +72,6 @@ public class GymBattleService {
     }
 
     public BattleResult startBattle(BattleRequest request) {
-        // Validate request
         if (request.getPlayerTeam() == null || request.getPlayerTeam().size() != 3) {
             throw new RuntimeException("Player must select exactly 3 Pokemon");
         }
@@ -80,7 +79,6 @@ public class GymBattleService {
         // Validate Pokemon ownership via synchronous REST call to user service
         validatePokemonOwnership(request.getUsername(), request.getPlayerTeam());
 
-        // Get trainer
         GymTrainer trainer = gymTrainerService.getTrainer(request.getTrainerName());
 
         // Get cards for both teams

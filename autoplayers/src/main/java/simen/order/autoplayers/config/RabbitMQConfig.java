@@ -17,7 +17,7 @@ public class RabbitMQConfig {
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        // Don't use JSON converter - we're sending plain text messages
+
         return template;
     }
 }
