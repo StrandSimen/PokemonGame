@@ -1,0 +1,60 @@
+server:
+  port: 8100
+spring:
+  application:
+    name: gateway
+  config:
+    import: "optional:consul:"
+  cloud:
+    consul:
+      enabled: true
+      discovery:
+        query-passing: true
+        hostname: consul
+        health-check-path: /actuator/health
+        prefer-ip-address: false
+        health-check-url: http://gateway:8100/actuator/health
+        acl-token:
+      config:
+        data-key: application.yml
+        format: yaml
+        default-context: defaults
+        prefixes: config
+        acl-token:
+      host: consul
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: boosterpack
+              uri: lb://boosterpack/
+              predicates:
+                 - Path=/api/boosterpack/**
+            - id: cards
+              uri: lb://boosterpack/
+              predicates:
+                - Path=/api/cards/**
+            - id: user
+              uri: lb://user/
+              predicates:
+                  - Path=/api/**
+          globalcors:
+            corsConfigurations:
+              '[/**]':
+                allowedOrigins: "http://localhost:5173"
+                allowedHeaders: "*"
+                allowedMethods:
+                  - "GET"
+                  - "POST"
+                  - "PUT"
+                  - "OPTIONS"
+                allowCredentials: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always

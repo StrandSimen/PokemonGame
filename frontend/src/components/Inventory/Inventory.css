@@ -1,0 +1,9 @@
+.card-inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 1em;
+}
+
+.inventory-cards {
+    padding: 1em;
+}

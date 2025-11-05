@@ -1,0 +1,45 @@
+.user-panel {
+    position: relative;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    width: 50em;
+    height: 30em;
+    background: linear-gradient(145deg, #f87171, #fb923c);
+    border-radius: 1.2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-grid {
+    #background-color: brown;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);;
+    grid-auto-rows: 1fr;
+    place-items: center;
+    overflow: hidden;
+    height: 11em;
+}
+
+.user-card {
+    width: 70%;
+    height: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.user-card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.user-card img {
+    width: 100%;
+    height: 100%;
+}
+
+.profile-picture {
+    position: absolute;
+    top: 1em;
+    right: 5em;
+}
