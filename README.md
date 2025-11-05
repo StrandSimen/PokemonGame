@@ -214,26 +214,26 @@ Communication Flow:
 ═══════════════════════════════════════════════════════════════════════════════
 
 SYNCHRONOUS (HTTP/REST - Request/Response):
-  ✓ Frontend → Gateway → Microservices (all user actions)
-  ✓ BoosterPack → Gateway → User Service (spendCoins endpoint)
+  • Frontend → Gateway → Microservices (all user actions)
+  • BoosterPack → Gateway → User Service (spendCoins endpoint)
      • When opening a booster pack, BoosterPack calls User service to deduct 20 coins
      • Uses RestTemplate with gateway URL: http://gateway:8100/api/defaultUser/spendCoins
      • Waits for response to confirm coins were deducted before generating cards
-  ✓ Autoplayers → User Service (inventory endpoint via Load Balancer)
+  • Autoplayers → User Service (inventory endpoint via Load Balancer)
      • When starting a gym battle, Autoplayers calls User service to validate Pokemon ownership
      • Uses WebClient with service URL: http://user/api/{username}/inventory
      • Waits for response to confirm player owns all 3 Pokemon before starting battle
      • Load balanced across multiple User service instances via Consul discovery
-  ✓ All services register with Consul for service discovery
-  ✓ Gateway uses Consul to find and load balance between service instances
+  • All services register with Consul for service discovery
+  • Gateway uses Consul to find and load balance between service instances
 
 ASYNCHRONOUS (RabbitMQ - Event-Driven):
-  ✓ booster.queue:  BoosterPack publishes → User consumes (add cards to inventory)
-  ✓ gym.queue:      Autoplayers publishes → User consumes (battle rewards/coins)
+  • booster.queue:  BoosterPack publishes → User consumes (add cards to inventory)
+  • gym.queue:      Autoplayers publishes → User consumes (battle rewards/coins)
 
 DATABASE (PostgreSQL):
-  ✓ Shared database accessed by all microservices for persistent storage
-  ✓ Stores: Users, Cards, Inventory, Coins, Gym Trainers, Battle History
+  • Shared database accessed by all microservices for persistent storage
+  • Stores: Users, Cards, Inventory, Coins, Gym Trainers, Battle History
 
 ═══════════════════════════════════════════════════════════════════════════════
 Service Responsibilities:
