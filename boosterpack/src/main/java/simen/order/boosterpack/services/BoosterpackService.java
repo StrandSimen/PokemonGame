@@ -1,10 +1,8 @@
 package simen.order.boosterpack.services;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +18,9 @@ public class BoosterpackService {
     private final RabbitTemplate rabbitTemplate;
     private final Random random = new Random();
 
+    @Value("${gateway.api.user.spend-coins}")
+    private String spendCoinsUrl;
+
     @Autowired
     public BoosterpackService(CardRepo cardRepo, RabbitTemplate rabbitTemplate) {
         this.cardRepo = cardRepo;
@@ -27,17 +28,10 @@ public class BoosterpackService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @Bean
-    public Queue boosterQueue() {
-        return new Queue("booster.queue", false); // Non-durable queue
-    }
 
     public List<Card> openBooster() {
-        String userServiceAddUrlTemplate = "http://user:8081/api/defaultUser/add/%d";
-        String userServiceUrl = "http://user:8081/api/defaultUser/spendCoins";
-
         try {
-            restTemplate.postForEntity(userServiceUrl, null, String.class);
+            restTemplate.postForEntity(spendCoinsUrl, null, String.class);
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("Not enough coins to open booster pack");
         }
@@ -45,22 +39,12 @@ public class BoosterpackService {
         List<Card> allCards = cardRepo.findAllByOrderByPokedexNumberAsc();
         List<Card> booster = new ArrayList<>();
 
-        // Trekker 10 unike random kort
+        // Trekker 11 unike random kort
         Set<Integer> chosenIndexes = new HashSet<>();
-        while (chosenIndexes.size() < 10) {
+        while (chosenIndexes.size() < 11) {
             int index = random.nextInt(allCards.size());
             if (chosenIndexes.add(index)) {
                 booster.add(allCards.get(index));
-            }
-        }
-
-        for (Card card : booster) {
-            String userServiceAddUrl = String.format(userServiceAddUrlTemplate, card.getPokedexNumber());
-            try {
-                restTemplate.postForEntity(userServiceAddUrl, null, String.class);
-            } catch (HttpClientErrorException e) {
-                // Optional: log failed additions but continue
-                System.err.println("Failed to add card " + card.getPokedexNumber() + " to inventory");
             }
         }
 

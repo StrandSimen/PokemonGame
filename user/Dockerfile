@@ -1,14 +1,16 @@
-# Use Java 22 slim image
-FROM openjdk:22-jdk-slim
-
-# Set working directory
+# Build stage
+FROM openjdk:22-jdk-slim AS build
 WORKDIR /app
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
-# Copy the fat JAR
-COPY target/user-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose port
+# Run stage
+FROM openjdk:22-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/user-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8081
-
-# Run the app
 ENTRYPOINT ["java","-jar","app.jar"]

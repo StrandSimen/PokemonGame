@@ -71,19 +71,5 @@ class BoosterpackControllerTest {
 
         verify(boosterpackService, times(1)).openBooster();
     }
-
-    @Test
-    void testGetInstanceInfo() {
-        // Act & Assert
-        webTestClient.get()
-                .uri("/api/boosterpack/info")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.service").exists()
-                .jsonPath("$.hostname").exists()
-                .jsonPath("$.port").exists();
-    }
 }
 

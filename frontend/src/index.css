@@ -1,0 +1,72 @@
+
+:root {
+    /* Dark Background Colors */
+    --bg-primary: #1a1d29;
+    --bg-secondary: #252936;
+    --bg-tertiary: #2d3142;
+    --bg-card: #1f2937;
+
+    /* Accent Colors */
+    --accent-primary: #fbbf24;
+    --accent-secondary: #f59e0b;
+    --accent-fire: #ff6b35;
+    --accent-water: #3b82f6;
+    --accent-grass: #10b981;
+    --accent-electric: #fbbf24;
+
+    /* Text Colors */
+    --text-primary: #f3f4f6;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --text-dark: #1f2937;
+
+    /* Button Colors */
+    --btn-primary: linear-gradient(145deg, #3b82f6, #2563eb);
+    --btn-success: linear-gradient(145deg, #10b981, #059669);
+    --btn-danger: linear-gradient(145deg, #ef4444, #dc2626);
+    --btn-warning: linear-gradient(145deg, #fbbf24, #f59e0b);
+
+    /* Border & Shadow */
+    --border-color: #374151;
+    --border-color-light: #4b5563;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(251, 191, 36, 0.3);
+
+    /* Overlay */
+    --overlay-dark: rgba(0, 0, 0, 0.75);
+    --overlay-medium: rgba(0, 0, 0, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color-light);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+

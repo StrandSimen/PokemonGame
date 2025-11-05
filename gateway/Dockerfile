@@ -1,14 +1,16 @@
-# Use OpenJDK 22 slim image
-FROM openjdk:22-jdk-slim
-
-# Set working directory
+# Build stage
+FROM openjdk:22-jdk-slim AS build
 WORKDIR /app
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
-# Copy the built JAR file from the Maven target directory
-COPY target/gateway-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose port 8080 (Gateway's port)
+# Run stage
+FROM openjdk:22-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/gateway-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8100
-
-# Run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]

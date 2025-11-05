@@ -3,22 +3,48 @@
     display: grid;
     place-items: center;
     text-align: center;
-    width: 50em;
-    height: 30em;
-    background: linear-gradient(145deg, #f87171, #fb923c);
+    width: 100%;
+    max-width: 35em;
+    min-width: 280px;
+    height: auto;
+    min-height: 22em;
+    padding: 1.5rem 1rem;
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-tertiary));
+    border: 2px solid var(--border-color-light);
     border-radius: 1.2rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-lg);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.user-panel h2 {
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    color: var(--accent-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.user-panel h3 {
+    font-size: 1.1rem;
+    margin: 0.8rem 0 0.5rem 0;
+    color: var(--text-secondary);
+}
+
+.user-panel p {
+    font-size: 1rem;
+    margin: 0.3rem 0;
+    color: var(--text-secondary);
+}
+
 .card-grid {
-    #background-color: brown;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);;
+    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 1fr;
     place-items: center;
     overflow: hidden;
-    height: 11em;
+    height: auto;
+    width: 100%;
+    max-width: 300px;
+    gap: 0.5rem;
 }
 
 .user-card {
@@ -40,6 +66,64 @@
 
 .profile-picture {
     position: absolute;
-    top: 1em;
-    right: 5em;
+    top: 0.8em;
+    right: 3em;
+    max-width: 70px;
+}
+
+.open-button {
+    background: var(--btn-primary);
+    color: white;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border: 2px solid var(--accent-primary);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
+}
+
+.open-button:hover {
+    background: linear-gradient(145deg, #2563eb, #1d4ed8);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border-color: var(--accent-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .user-panel {
+        max-width: 32em;
+    }
+}
+
+@media (max-width: 900px) {
+    .user-panel {
+        max-width: 30em;
+        min-height: 20em;
+    }
+
+    .card-grid {
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 600px) {
+    .user-panel {
+        max-width: 100%;
+        min-height: 18em;
+        padding: 1rem;
+    }
+
+    .profile-picture {
+        right: 2em;
+        max-width: 60px;
+    }
+
+    .card-grid {
+        height: 8em;
+        grid-template-columns: repeat(3, 1fr);
+    }
 }

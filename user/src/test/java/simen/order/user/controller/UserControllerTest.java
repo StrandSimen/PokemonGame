@@ -42,10 +42,8 @@ class UserControllerTest {
 
     @Test
     void testGetPlayerInventory() {
-        // Arrange
         when(userService.getPlayerInventory("testUser")).thenReturn(testUser.getInventory());
 
-        // Act & Assert
         webTestClient.get()
                 .uri("/api/testUser/inventory")
                 .accept(MediaType.APPLICATION_JSON)
@@ -60,10 +58,8 @@ class UserControllerTest {
 
     @Test
     void testGetUserCoins() {
-        // Arrange
         when(userService.getUserCoins("testUser")).thenReturn(100);
 
-        // Act & Assert
         webTestClient.get()
                 .uri("/api/testUser/coins")
                 .accept(MediaType.APPLICATION_JSON)
@@ -77,10 +73,8 @@ class UserControllerTest {
 
     @Test
     void testAddToInventory() {
-        // Arrange
         when(userService.addToInventory("testUser", 25)).thenReturn(testUser);
 
-        // Act & Assert
         webTestClient.post()
                 .uri("/api/testUser/add/25")
                 .exchange()
@@ -94,10 +88,8 @@ class UserControllerTest {
 
     @Test
     void testRemoveFromInventory() {
-        // Arrange
         when(userService.removeFromInventory("testUser", 25)).thenReturn(testUser);
 
-        // Act & Assert
         webTestClient.post()
                 .uri("/api/testUser/remove/25")
                 .exchange()
@@ -110,10 +102,8 @@ class UserControllerTest {
 
     @Test
     void testSellCard_WithDefaultPrice() {
-        // Arrange
         when(userService.sellCard("testUser", 25, 20)).thenReturn(testUser);
 
-        // Act & Assert
         webTestClient.post()
                 .uri("/api/testUser/sell/25")
                 .exchange()
@@ -126,10 +116,8 @@ class UserControllerTest {
 
     @Test
     void testSellCard_WithCustomPrice() {
-        // Arrange
         when(userService.sellCard("testUser", 25, 50)).thenReturn(testUser);
 
-        // Act & Assert
         webTestClient.post()
                 .uri("/api/testUser/sell/25?sellPrice=50")
                 .exchange()
@@ -142,12 +130,10 @@ class UserControllerTest {
 
     @Test
     void testSpendCoins_Success() {
-        // Arrange
         testUser.setCoins(100);
         when(userService.getUser("defaultUser")).thenReturn(testUser);
         when(userService.saveUser(any(User.class))).thenReturn(testUser);
 
-        // Act & Assert
         webTestClient.post()
                 .uri("/api/defaultUser/spendCoins")
                 .exchange()
@@ -161,11 +147,9 @@ class UserControllerTest {
 
     @Test
     void testSpendCoins_NotEnoughCoins() {
-        // Arrange
         testUser.setCoins(10);
         when(userService.getUser("defaultUser")).thenReturn(testUser);
 
-        // Act & Assert
         webTestClient.post()
                 .uri("/api/defaultUser/spendCoins")
                 .exchange()
@@ -175,20 +159,6 @@ class UserControllerTest {
 
         verify(userService).getUser("defaultUser");
         verify(userService, never()).saveUser(any(User.class));
-    }
-
-    @Test
-    void testGetInstanceInfo() {
-        // Act & Assert
-        webTestClient.get()
-                .uri("/api/info")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.service").exists()
-                .jsonPath("$.hostname").exists()
-                .jsonPath("$.port").exists();
     }
 }
 

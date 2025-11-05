@@ -3,11 +3,20 @@ import type {Card} from "../../types/Card.ts";
 import "./UserPanel.css";
 import ashKetchum from "../pictures/ashKetchum.png"
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../../config/apiConfig";
+import BadgeDisplay from "../Badge/BadgeDisplay";
 
+interface CardWithCount extends Card {
+    count: number;
+}
 
-const UserPanel: React.FC = () => {
+interface UserPanelProps {
+    recentCards?: Card[];
+}
+
+const UserPanel: React.FC<UserPanelProps> = ({ recentCards = [] }) => {
     const[coins, setCoins] = useState<number>(0);
-    const[inventory, setInventory] = useState<Card[]>([]);
+    const[inventory, setInventory] = useState<CardWithCount[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -18,28 +27,26 @@ const UserPanel: React.FC = () => {
             setError(null);
 
             // Fetch coins
-            const coinsRes = await fetch("http://localhost:8100/api/defaultUser/coins");
+            const coinsRes = await fetch(API_ENDPOINTS.USER_COINS);
             if (!coinsRes.ok) throw new Error("Failed to fetch user coins");
             const coinsData = await coinsRes.json();
-            setCoins(Number(coinsData)); // just use the number directly
-
+            setCoins(Number(coinsData));
 
             // Fetch inventory
-            const invRes = await fetch("http://localhost:8100/api/defaultUser/inventory");
+            const invRes = await fetch(API_ENDPOINTS.USER_INVENTORY);
             if (!invRes.ok) throw new Error("Failed to fetch inventory");
             const invData: Record<string, number> = await invRes.json();
 
-            const pokedexNumbers = Object.keys(invData);
-
-            const card: Card[] = await Promise.all(
-                pokedexNumbers.map(async (id) => {
-                    const res = await fetch(`http://localhost:8100/api/cards/${id}`);
+            const cards: CardWithCount[] = await Promise.all(
+                Object.entries(invData).map(async ([id, count]) => {
+                    const res = await fetch(API_ENDPOINTS.CARD_BY_ID(Number(id)));
                     if (!res.ok) throw new Error(`Failed to fetch card ${id}`);
-                    return res.json() as Promise<Card>;
+                    const cardData = await res.json() as Card;
+                    return { ...cardData, count };
                 })
             );
 
-            setInventory(card);
+            setInventory(cards);
 
         } catch (err) {
             setError((err as Error).message);
@@ -52,21 +59,47 @@ const UserPanel: React.FC = () => {
         fetchUserData();
     }, []);
 
+    // Refresh coins when recent cards change (pack was opened)
+    useEffect(() => {
+        if (recentCards.length > 0) {
+            fetchUserData();
+        }
+    }, [recentCards]);
+
     if (loading) return <p>Loading user data...</p>;
     if (error) return <p>Error: {error}</p>;
+
+    // Determine which cards to display
+    let cardsToDisplay: Card[] = [];
+
+    if (recentCards.length > 0) {
+        // Show last 3 cards from the recently opened pack
+        cardsToDisplay = recentCards.slice(-3);
+    } else {
+        // Show first 3 cards from inventory if no recent cards
+        const allCards: Card[] = [];
+        inventory.forEach(card => {
+            for (let i = 0; i < card.count; i++) {
+                allCards.push(card);
+            }
+        });
+        cardsToDisplay = allCards.slice(0, 3);
+    }
 
     return(
         <div className="user-panel">
             <h2>Ash Ketchum</h2>
             <img src={ashKetchum} alt="ashKetchum picture" className="profile-picture"/>
-            <p>Coins: {coins}</p>
+            <p>🪙: {coins}</p>
+
+            <BadgeDisplay variant="compact" />
 
             <div>
-                <h3>Inventory:</h3>
-                {inventory.length > 0 ? (
+                <h3>Inventory Preview:</h3>
+                {cardsToDisplay.length > 0 ? (
                     <div className="card-grid">
-                        {inventory.slice(0, 6).map((card) => (
-                            <div key={card.pokedexNumber} className="user-card">
+                        {cardsToDisplay.map((card, index) => (
+                            <div key={`${card.pokedexNumber}-${index}`} className="user-card">
                                 <img src={card.imageUrl} alt={card.name}/>
                             </div>
                         ))}

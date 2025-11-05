@@ -75,7 +75,6 @@ class UserIntegrationTest {
 
     @Test
     void testUserRepository_SaveAndFind() {
-        // Arrange
         User user = new User();
         user.setUsername("repoTestUser");
         user.setCoins(200);
@@ -84,11 +83,9 @@ class UserIntegrationTest {
         inventory.put(4, 1);
         user.setInventory(inventory);
 
-        // Act
         User saved = userRepo.save(user);
         User found = userRepo.findById("repoTestUser").orElse(null);
 
-        // Assert
         assertNotNull(saved);
         assertNotNull(found);
         assertEquals(200, found.getCoins());
@@ -101,7 +98,6 @@ class UserIntegrationTest {
 
     @Test
     void testProcessBoosterEvent_Integration() {
-        // Arrange
         User user = new User();
         user.setUsername("defaultUser");
         user.setCoins(100);
@@ -111,11 +107,9 @@ class UserIntegrationTest {
         userRepo.deleteById("defaultUser");
         userRepo.save(user);
 
-        // Act
         String boosterMessage = "1:Bulbasaur, 4:Charmander, 7:Squirtle";
         userService.processBoosterEvent(boosterMessage);
 
-        // Assert
         User updatedUser = userRepo.findById("defaultUser").orElse(null);
         assertNotNull(updatedUser);
         assertEquals(1, updatedUser.getInventory().get(1));

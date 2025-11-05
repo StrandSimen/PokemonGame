@@ -1,14 +1,137 @@
 .main-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+    padding: 1.5rem;
+    gap: 1.5rem;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.header-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+}
+
+.game-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    text-shadow: 0 4px 8px rgba(251, 191, 36, 0.3);
+    letter-spacing: 2px;
+    text-align: center;
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.2));
+}
+
+.content-panels {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
-    justify-items: center;
-    #background: linear-gradient(to right, #f0f4ff, #e0f7ff);
-    height: 100vh;
+    gap: 1.5rem;
+    align-items: start;
+    flex: 1;
+    max-width: 100%;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .left-panel, .right-panel {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.battle-button {
+    background: var(--btn-danger);
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    padding: 1.2rem 2.5rem;
+    border: 3px solid var(--accent-primary);
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.battle-button:hover {
+    background: linear-gradient(145deg, #dc2626, #b91c1c);
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 12px 32px rgba(239, 68, 68, 0.6), 0 0 30px rgba(251, 191, 36, 0.5);
+    border-color: var(--accent-secondary);
+}
+
+.battle-button:active {
+    transform: scale(1.02) translateY(-1px);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1400px) {
+    .content-panels {
+        gap: 1.2rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-layout {
+        padding: 1.2rem;
+    }
+
+    .content-panels {
+        gap: 1.2rem;
+    }
+
+    .game-title {
+        font-size: 1.8rem;
+    }
+
+    .battle-button {
+        font-size: 1.3rem;
+        padding: 1rem 2rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .content-panels {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        max-width: 600px;
+    }
+
+    .game-title {
+        font-size: 1.6rem;
+    }
+
+    .battle-button {
+        font-size: 1.2rem;
+        padding: 0.9rem 1.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .main-layout {
+        padding: 1rem;
+        gap: 1.2rem;
+    }
+
+    .game-title {
+        font-size: 1.3rem;
+        letter-spacing: 0.5px;
+    }
+
+    .battle-button {
+        font-size: 1rem;
+        padding: 0.7rem 1.3rem;
+        letter-spacing: 1px;
+    }
 }
