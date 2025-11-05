@@ -250,7 +250,7 @@ public class GymBattleService {
         }
     }
 
-    //Validates that the player owns all Pokemon in their team via synchronous REST call to user service.
+    // Validates that the player owns all Pokemon in their team via synchronous REST call to user service.
     private void validatePokemonOwnership(String username, List<Integer> pokemonTeam) {
         try {
             System.out.println("=== SYNCHRONOUS REST CALL: Validating Pokemon ownership ===");
@@ -263,7 +263,7 @@ public class GymBattleService {
                     .uri("http://user/api/" + username + "/inventory")
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<Map<Integer, Integer>>() {})
-                    .block(); // Synchronous blocking call
+                    .block();
 
             System.out.println("Response received from user service!");
 

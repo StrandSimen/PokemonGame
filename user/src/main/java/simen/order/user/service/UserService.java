@@ -29,7 +29,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    //Vil bli brukt senere når vi har en liste over hele inventory, skal kunne klikke på hvilket som helst kort og selge det
     public User removeFromInventory(String username, int pokedexNumber) {
         User user = getUser(username);
         Map<Integer, Integer> inventory = user.getInventory();
@@ -126,5 +125,4 @@ public class UserService {
             System.err.println("Error processing gym reward: " + e.getMessage());
         }
     }
-
 }

@@ -67,7 +67,6 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({ variant = "compact" }) => {
         );
     }
 
-    // Full variant for Inventory
     return (
         <div className="badge-display-full">
             <h2 className="badge-section-title">

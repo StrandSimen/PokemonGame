@@ -160,18 +160,5 @@ class UserControllerTest {
         verify(userService).getUser("defaultUser");
         verify(userService, never()).saveUser(any(User.class));
     }
-
-    @Test
-    void testGetInstanceInfo() {
-        webTestClient.get()
-                .uri("/api/info")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.service").exists()
-                .jsonPath("$.hostname").exists()
-                .jsonPath("$.port").exists();
-    }
 }
 

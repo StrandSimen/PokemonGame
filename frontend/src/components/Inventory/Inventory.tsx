@@ -94,7 +94,7 @@ const Inventory: React.FC = () => {
             }, 3000);
         } catch (err) {
             console.error(err);
-            setToastMessage("Failed to sell card ❌");
+            setToastMessage("Failed to sell card");
             setSellingCardId(null);
             setShowCoinAnimation(false);
             setTimeout(() => {

@@ -8,7 +8,6 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* Loading Screen */
 .loading-screen {
     text-align: center;
     color: var(--text-primary);
@@ -40,7 +39,6 @@
     50% { opacity: 0.7; transform: scale(1.05); }
 }
 
-/* Error Screen */
 .error-screen {
     background: linear-gradient(145deg, var(--bg-card), var(--bg-tertiary));
     border: 2px solid var(--border-color-light);
@@ -62,7 +60,6 @@
     margin-bottom: 2rem;
 }
 
-/* Result Screen */
 .result-screen {
     background: white;
     padding: 3rem;
@@ -114,7 +111,6 @@
     margin-bottom: 1rem;
 }
 
-/* Badge Earned */
 .badge-earned {
     background: linear-gradient(145deg, #fef3c7, #fde68a);
     padding: 1.5rem;
@@ -136,7 +132,6 @@
     font-weight: bold;
 }
 
-/* Coins Earned */
 .coins-earned {
     background: linear-gradient(145deg, #dbeafe, #bfdbfe);
     padding: 1.5rem;
@@ -157,7 +152,6 @@
     font-weight: bold;
 }
 
-/* Battle Log Section */
 .battle-log-section {
     margin: 2rem 0;
 }
@@ -200,7 +194,6 @@
     margin: 0;
 }
 
-/* Action Buttons */
 .action-buttons-result {
     display: flex;
     justify-content: center;
@@ -260,7 +253,6 @@
     transform: scale(1.05);
 }
 
-/* Scrollbar styling for battle log */
 .battle-log::-webkit-scrollbar {
     width: 8px;
 }
