@@ -327,7 +327,6 @@ Tests with real H2 database:
 **Controllers:**
 - GET and POST endpoints
 - Success and error responses
-- Instance info endpoints for load balancing
 - HTTP status codes (200, 400)
 
 ### Test Configuration:
