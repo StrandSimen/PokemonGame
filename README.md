@@ -126,130 +126,59 @@ This project uses a microservices architecture with:
 
 ## Architecture Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              Docker Compose Environment                          │
-└─────────────────────────────────────────────────────────────────────────────────┘
+<img width="1361" height="2045" alt="Diagram" src="https://github.com/user-attachments/assets/89788e17-cfac-4bf6-a8f3-6446bcfe4b16" />
 
-                                 ┌──────────────────┐
-                                 │   Frontend       │
-                                 │   (React + Vite) │
-                                 │   Port: 5173     │
-                                 └────────┬─────────┘
-                                          │
-                                          │ [SYNC] HTTP/REST
-                                          ▼
-                         ┌────────────────────────────────┐
-                         │  Spring Cloud Gateway          │
-                         │  Port: 8100                    │
-                         │  • Load Balancing              │
-                         │  • API Routing                 │
-                         └─────────┬──────────────────────┘
-                                   │
-                                   │ [SYNC] Service Discovery
-                                   ▼
-                         ┌─────────────────────┐
-                         │     Consul          │
-                         │   Port: 8500        │
-                         │  • Service Registry │
-                         │  • Health Checks    │
-                         └──────────┬──────────┘
-                                    │
-                                    │ [SYNC] Registration
-              ┌─────────────────────┼─────────────────────┐
-              │                     │                     │
-              ▼                     ▼                     ▼
-    ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-    │  BoosterPack     │  │  User Service    │  │  Autoplayers     │
-    │  Service(s)      │  │  Port: 8081      │  │  Service(s)      │
-    │  Port: 8082      │  │  (Scalable x2)   │  │  Port: 8083      │
-    │  (Scalable x3)   │  │                  │  │  (Scalable x2)   │
-    └────────┬─────────┘  └────────┬─────────┘  └────────┬─────────┘
-             │                     ▲                     │
-             │ [SYNC]              │ [SYNC]              │
-             │ via Gateway         │ via Load Balancer   │
-             └────────► spendCoins │ ◄───────────────────┘
-                                   │    validateOwnership
-             │                     │                     │
-             │ [ASYNC]             │ [ASYNC]             │ [ASYNC]
-             │ Publish             │ Consume             │ Publish
-             │                     │                     │
-             └──────────┐          │          ┌──────────┘
-                        │          │          │
-                        ▼          ▼          ▼
-              ┌───────────────────────────────────────┐
-              │          RabbitMQ Broker              │
-              │          Port: 5672 (AMQP)            │
-              │          Port: 15672 (Management UI)  │
-              │      [ASYNCHRONOUS MESSAGING]         │
-              │                                       │
-              │  ┌─────────────────────────────────┐ │
-              │  │  Queue: "booster.queue"         │ │
-              │  │  • Created by: BoosterPack      │ │
-              │  │  • Published by: BoosterPack    │ │
-              │  │  • Consumed by: User            │ │
-              │  │  • Message: Card list from pack │ │
-              │  └─────────────────────────────────┘ │
-              │                                       │
-              │  ┌─────────────────────────────────┐ │
-              │  │  Queue: "gym.queue"             │ │
-              │  │  • Created by: Autoplayers      │ │
-              │  │  • Published by: Autoplayers    │ │
-              │  │  • Consumed by: User            │ │
-              │  │  • Message: Battle rewards      │ │
-              │  └─────────────────────────────────┘ │
-              └───────────────────────────────────────┘
 
-                 ┌──────────────────────────────────┐
-                 │      PostgreSQL Database          │
-                 │      Port: 5432                   │
-                 │   [SYNCHRONOUS - JDBC/JPA]        │
-                 │                                   │
-                 │  Accessed by all microservices    │
-                 │  (BoosterPack, User, Autoplayers) │
-                 └───────────────────────────────────┘
 
-═══════════════════════════════════════════════════════════════════════════════
-Communication Flow:
-═══════════════════════════════════════════════════════════════════════════════
 
-SYNCHRONOUS (HTTP/REST - Request/Response):
+**Communication Flow:**
+
+**SYNCHRONOUS (HTTP/REST - Request/Response):**
   • Frontend → Gateway → Microservices (all user actions)
+  
   • BoosterPack → Gateway → User Service (spendCoins endpoint)
      • When opening a booster pack, BoosterPack calls User service to deduct 20 coins
      • Uses RestTemplate with gateway URL: http://gateway:8100/api/defaultUser/spendCoins
      • Waits for response to confirm coins were deducted before generating cards
+     
   • Autoplayers → User Service (inventory endpoint via Load Balancer)
      • When starting a gym battle, Autoplayers calls User service to validate Pokemon ownership
      • Uses WebClient with service URL: http://user/api/{username}/inventory
      • Waits for response to confirm player owns all 3 Pokemon before starting battle
      • Load balanced across multiple User service instances via Consul discovery
+     
   • All services register with Consul for service discovery
+  
   • Gateway uses Consul to find and load balance between service instances
 
-ASYNCHRONOUS (RabbitMQ - Event-Driven):
+**ASYNCHRONOUS (RabbitMQ - Event-Driven):**
   • booster.queue:  BoosterPack publishes → User consumes (add cards to inventory)
   • gym.queue:      Autoplayers publishes → User consumes (battle rewards/coins)
 
-DATABASE (PostgreSQL):
+**DATABASE (PostgreSQL):**
   • Shared database accessed by all microservices for persistent storage
   • Stores: Users, Cards, Inventory, Coins, Gym Trainers, Battle History
 
-═══════════════════════════════════════════════════════════════════════════════
-Service Responsibilities:
-═══════════════════════════════════════════════════════════════════════════════
+**Service Responsibilities**:
 
 • Frontend:          React UI for opening packs, viewing inventory, and battling trainers
+
 • Gateway:           API Gateway - single entry point with load balancing and routing
+
 • Consul:            Service discovery, health monitoring, dynamic service registry
+
 • BoosterPack:       Opens booster packs, deducts coins, publishes card lists to RabbitMQ
+
 • User:              Manages inventory, coins, consumes booster and gym reward events
+
 • Autoplayers:       Gym battle system, AI trainers, publishes battle rewards to RabbitMQ
+
 • RabbitMQ:          Message broker for asynchronous communication between services
+
 • PostgreSQL:        Persistent data storage shared by all microservices
 
-═══════════════════════════════════════════════════════════════════════════════
-```
+
+
 
 ## Architecture Decisions and Simplifications
 
