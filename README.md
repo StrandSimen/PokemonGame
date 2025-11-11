@@ -126,7 +126,8 @@ This project uses a microservices architecture with:
 
 ## Architecture Diagram
 
-<img width="1361" height="2045" alt="Diagram" src="https://github.com/user-attachments/assets/89788e17-cfac-4bf6-a8f3-6446bcfe4b16" />
+<img width="1361" height="2045" alt="Diagram" src="https://github.com/user-attachments/assets/eaca0428-e035-4e02-8cec-a44daac6bdbf" />
+
 
 
 
